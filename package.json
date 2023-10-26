@@ -1,0 +1,14 @@
+{
+    "name": "realistic-gui",
+    "version": "0.1.0",
+    "description": "nodecli-gui (deep ver.)",
+    "main": "dist/index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "ice1",
+    "license": "Apache-2.0",
+    "dependencies": {
+        "typescript": "^5.2.2"
+    }
+}
