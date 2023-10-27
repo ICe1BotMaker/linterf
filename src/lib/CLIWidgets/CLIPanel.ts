@@ -1,4 +1,4 @@
-import { Iattributes } from "../CLIApplication";
+import { Iattributes, attr } from "../CLIApplication";
 
 export class CLIPanel {
     public attributes: Iattributes = {
@@ -14,10 +14,6 @@ export class CLIPanel {
     };
 
     public constructor(attributes?: Iattributes) {
-        if (attributes) Object.keys(attributes).forEach((attribute) => {
-            if (!this.attributes.accepts.includes(attribute) && this.attributes.accepts.length !== 0) return;
-            const value = attributes[attribute];
-            this.attributes[attribute] = value;
-        });
+        if (attributes) this.attributes = attr(attributes, this.attributes);
     }
 }
