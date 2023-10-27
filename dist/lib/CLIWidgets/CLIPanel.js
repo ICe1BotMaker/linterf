@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CLIPanel = void 0;
+const CLIApplication_1 = require("../CLIApplication");
 class CLIPanel {
     constructor(attributes) {
         this.attributes = {
@@ -15,12 +16,7 @@ class CLIPanel {
             "events": {}
         };
         if (attributes)
-            Object.keys(attributes).forEach((attribute) => {
-                if (!this.attributes.accepts.includes(attribute) && this.attributes.accepts.length !== 0)
-                    return;
-                const value = attributes[attribute];
-                this.attributes[attribute] = value;
-            });
+            this.attributes = (0, CLIApplication_1.attr)(attributes, this.attributes);
     }
 }
 exports.CLIPanel = CLIPanel;
