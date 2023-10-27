@@ -10,4 +10,5 @@ const panel1 = new CLIPanel({
     }
 });
 app.append(panel1);
-console.log(panel1);
+
+app.do(1);
