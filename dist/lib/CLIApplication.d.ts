@@ -1,4 +1,10 @@
-export interface Iattributes {
+export interface Iwidget {
+    data: Idata;
+}
+export interface Idata {
+    properties: Iproperties;
+}
+export interface Iproperties {
     accepts: Array<string>;
     paths: Array<string>;
     styles: Istyles;
@@ -6,15 +12,19 @@ export interface Iattributes {
     [key: string]: any;
 }
 export interface Istyles {
-    width?: number;
-    height?: number;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    fill: string;
     "background-color"?: string;
     "text-color"?: string;
 }
 export declare class CLIApplication {
-    private components;
+    private widgets;
+    private curlocs;
     constructor(option?: object);
-    append(widgets: Iattributes): void;
-    do(frame: number): void;
+    append(...widgets: Array<Iwidget>): void;
+    show(frame: number): void;
 }
-export declare function attr(get_attributes: Iattributes, origin_attributes: Iattributes): Iattributes;
+export declare function setProps(get: Iproperties, origin: Iproperties): Iproperties;

@@ -1,22 +1,50 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CLIPanel = void 0;
-const CLIApplication_1 = require("../CLIApplication");
+const app = __importStar(require("../CLIApplication"));
 class CLIPanel {
-    constructor(attributes) {
-        this.attributes = {
-            "accepts": ["paths", "styles"],
-            "paths": [],
-            "styles": {
-                "width": 10,
-                "height": 5,
-                "background-color": "white",
-                "text-color": "black"
-            },
-            "events": {}
+    constructor(props) {
+        this.data = {
+            "properties": {
+                "accepts": ["paths", "styles"],
+                "paths": [],
+                "styles": {
+                    "x": 0,
+                    "y": 0,
+                    "width": process.stdout.columns,
+                    "height": process.stdout.rows - 1,
+                    "fill": "█",
+                    "background-color": "#000000",
+                    "text-color": "#ffffff"
+                },
+                "events": {}
+            }
         };
-        if (attributes)
-            this.attributes = (0, CLIApplication_1.attr)(attributes, this.attributes);
+        if (props)
+            this.data.properties = app.setProps(props, this.data.properties);
     }
 }
 exports.CLIPanel = CLIPanel;

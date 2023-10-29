@@ -1,5 +1,5 @@
-import { Iattributes } from "../CLIApplication";
+import * as app from "../CLIApplication";
 export declare class CLIPanel {
-    attributes: Iattributes;
-    constructor(attributes?: Iattributes);
+    data: app.Idata;
+    constructor(props?: app.Iproperties);
 }
