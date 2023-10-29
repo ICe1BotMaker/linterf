@@ -1,19 +1,24 @@
-import { Iattributes, attr } from "../CLIApplication";
+import * as app from "../CLIApplication";
 
 export class CLIPanel {
-    public attributes: Iattributes = {
-        "accepts": ["paths", "styles"],
-        "paths": [],
-        "styles": {
-            "width": 10,
-            "height": 5,
-            "background-color": "white",
-            "text-color": "black"
-        },
-        "events": {}
+    public data: app.Idata = {
+        "properties": {
+            "accepts": ["paths", "styles"],
+            "paths": [],
+            "styles": {
+                "x": 0,
+                "y": 0,
+                "width": process.stdout.columns,
+                "height": process.stdout.rows - 1,
+                "fill": "█",
+                "background-color": "#000000",
+                "text-color": "#ffffff"
+            },
+            "events": {}
+        }
     };
 
-    public constructor(attributes?: Iattributes) {
-        if (attributes) this.attributes = attr(attributes, this.attributes);
+    public constructor(props?: app.Iproperties) {
+        if (props) this.data.properties = app.setProps(props, this.data.properties);
     }
 }
