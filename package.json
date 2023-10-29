@@ -3,12 +3,10 @@
     "version": "0.1.0",
     "description": "nodecli-gui (deep ver.)",
     "main": "dist/index.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
     "author": "ice1",
     "license": "Apache-2.0",
     "dependencies": {
+        "chalk": "^4.1.2",
         "typescript": "^5.2.2"
     }
 }
