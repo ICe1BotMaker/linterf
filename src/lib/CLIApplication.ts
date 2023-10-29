@@ -1,4 +1,14 @@
-export interface Iattributes {
+import chalk from 'chalk';
+
+export interface Iwidget {
+    data: Idata;
+}
+
+export interface Idata {
+    properties: Iproperties;
+}
+
+export interface Iproperties {
     accepts: Array<string>;
     paths: Array<string>;
     styles: Istyles;
@@ -8,31 +18,42 @@ export interface Iattributes {
 }
 
 export interface Istyles {
-    width?: number;
-    height?: number;
+    x: number;
+    y: number;
+
+    width: number;
+    height: number;
+
+    fill: string;
     "background-color"?: string;
+
     "text-color"?: string;
 }
 
 export class CLIApplication {
-    private components: Array<Iattributes> = [];
+    private widgets: Array<Iwidget> = [];
+    private curlocs = {};
     
     public constructor(option?: object) {
+        this.widgets = [];
+        this.curlocs = {
+            tab: 0
+        };
+
         // option
     }
 
-    public append(widgets: Iattributes) {
-        this.components = [...this.components, widgets];
+    public append(...widgets: Array<Iwidget>) {
+        this.widgets = this.widgets.concat(widgets);
     }
 
-    public do(frame: number) {
+    public show(frame: number) {
         process.stdin.setRawMode(true);
         process.stdin.setEncoding(`utf-8`);
 
         process.stdin.on(`data`, (key: string) => {
             if (key === `\u0003`) {
-                console.clear();
-                process.stdout.write(`\x1B[?25h`);
+                process.stdout.write(`\x1b[${process.stdout.rows - 1};${process.stdout.columns}H`);
                 process.exit();
             }
         });
@@ -42,20 +63,31 @@ export class CLIApplication {
         setInterval(() => {
             console.clear();
 
-            this.components.forEach((component: Iattributes) => {
-                console.log(component);
+            this.widgets.forEach((widget: Iwidget) => {
+                /* width & height */
+                process.stdout.write(`\x1b[${widget.data.properties.styles.y};${widget.data.properties.styles.x}H`);
+                if (widget.data.properties.styles.width) console.log(chalk.hex(widget.data.properties.styles['background-color'] ? widget.data.properties.styles['background-color'] : `#ffffff`)(widget.data.properties.styles.fill.repeat(widget.data.properties.styles.width)));
+                
+                if (widget.data.properties.styles.height) for (let i = 0; i <= widget.data.properties.styles.height; i++) {
+                    process.stdout.write(`\x1b[${widget.data.properties.styles.y + i};${widget.data.properties.styles.x}H`);
+                    if (widget.data.properties.styles.width) console.log(chalk.hex(widget.data.properties.styles['background-color'] ? widget.data.properties.styles['background-color'] : `#ffffff`)(widget.data.properties.styles.fill.repeat(widget.data.properties.styles.width)));
+                }
             });
         }, 1000 / frame);
     }
 }
 
-export function attr(get_attributes: Iattributes, origin_attributes: Iattributes): Iattributes {
-    if (get_attributes) Object.keys(get_attributes).forEach((attribute: string) => {
-        if (!origin_attributes.accepts.includes(attribute) && origin_attributes.accepts.length !== 0) return;
-
-        const value = get_attributes[attribute];
-        origin_attributes[attribute] = value;
+export function setProps(get: Iproperties, origin: Iproperties): Iproperties {
+    if (get) Object.keys(get).forEach((prop: string) => {
+        if (origin?.accepts && !origin.accepts.includes(prop) && origin.accepts.length !== 0) return;
+        
+        if (!Array.isArray(origin[prop]) && typeof origin[prop] === `object`) {
+            origin[prop] = setProps(get[prop], origin[prop]);
+        } else {
+            const value = get[prop];
+            origin[prop] = value;
+        }
     });
 
-    return origin_attributes;
+    return origin;
 }
