@@ -2,6 +2,7 @@ import * as app from "../CLIApplication";
 
 export class CLIPanel {
     public data: app.Idata = {
+        "type": "panel",
         "properties": {
             "accepts": ["paths", "styles"],
             "paths": [],
