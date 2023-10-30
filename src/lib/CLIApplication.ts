@@ -5,6 +5,7 @@ export interface Iwidget {
 }
 
 export interface Idata {
+    type: string;
     properties: Iproperties;
 }
 
@@ -14,6 +15,8 @@ export interface Iproperties {
     styles: Istyles;
     events: object;
 
+    text?: string;
+
     [key: string]: any;
 }
 
@@ -21,10 +24,10 @@ export interface Istyles {
     x: number;
     y: number;
 
-    width: number;
-    height: number;
+    width?: number;
+    height?: number;
 
-    fill: string;
+    fill?: string;
     "background-color"?: string;
 
     "text-color"?: string;
@@ -64,13 +67,22 @@ export class CLIApplication {
             console.clear();
 
             this.widgets.forEach((widget: Iwidget) => {
-                /* width & height */
-                process.stdout.write(`\x1b[${widget.data.properties.styles.y};${widget.data.properties.styles.x}H`);
-                if (widget.data.properties.styles.width) console.log(chalk.hex(widget.data.properties.styles['background-color'] ? widget.data.properties.styles['background-color'] : `#ffffff`)(widget.data.properties.styles.fill.repeat(widget.data.properties.styles.width)));
-                
-                if (widget.data.properties.styles.height) for (let i = 0; i <= widget.data.properties.styles.height; i++) {
-                    process.stdout.write(`\x1b[${widget.data.properties.styles.y + i};${widget.data.properties.styles.x}H`);
+                if ([`panel`].includes(widget.data.type)) {
+                    /* width & height */
+                    if (!widget.data.properties.styles.fill) widget.data.properties.styles.fill = `█`;
+
+                    process.stdout.write(`\x1b[${widget.data.properties.styles.y};${widget.data.properties.styles.x}H`);
                     if (widget.data.properties.styles.width) console.log(chalk.hex(widget.data.properties.styles['background-color'] ? widget.data.properties.styles['background-color'] : `#ffffff`)(widget.data.properties.styles.fill.repeat(widget.data.properties.styles.width)));
+                    
+                    if (widget.data.properties.styles.height) for (let i = 0; i <= widget.data.properties.styles.height; i++) {
+                        process.stdout.write(`\x1b[${widget.data.properties.styles.y + i};${widget.data.properties.styles.x}H`);
+                        if (widget.data.properties.styles.width) console.log(chalk.hex(widget.data.properties.styles['background-color'] ? widget.data.properties.styles['background-color'] : `#ffffff`)(widget.data.properties.styles.fill.repeat(widget.data.properties.styles.width)));
+                    }
+                }
+                
+                if ([`label`].includes(widget.data.type)) {
+                    process.stdout.write(`\x1b[${widget.data.properties.styles.y};${widget.data.properties.styles.x}H`);
+                    console.log(widget.data.properties.text);
                 }
             });
         }, 1000 / frame);
