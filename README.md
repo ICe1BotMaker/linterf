@@ -1,7 +1,7 @@
 # 💫 realistic-gui
 **nodecli-gui 심화버전**
 
-- **기본 컴포넌트**: Panel, Button, Label, Checkbox, RadioButton, Image, Textbox, Webview
+- **기본 위젯**: Panel, Button, Label, Checkbox, RadioButton, Image, Textbox, Webview
 - **제공 프리셋**: Modal, (추 후 작성)
 - **기능**: TCG (3D CLI Graphic), (추 후 작성)
 
