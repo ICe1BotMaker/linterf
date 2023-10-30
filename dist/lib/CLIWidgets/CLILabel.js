@@ -23,22 +23,19 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CLIPanel = void 0;
+exports.CLILabel = void 0;
 const app = __importStar(require("../CLIApplication"));
-class CLIPanel {
+class CLILabel {
     constructor(props) {
         this.data = {
-            "type": "panel",
+            "type": "label",
             "properties": {
-                "accepts": ["paths", "styles"],
+                "text": "lorem ipsum",
+                "accepts": ["paths", "styles", "events"],
                 "paths": [],
                 "styles": {
-                    "x": 0,
-                    "y": 0,
-                    "width": process.stdout.columns,
-                    "height": process.stdout.rows - 1,
-                    "fill": "█",
-                    "background-color": "#000000",
+                    "x": 4,
+                    "y": 3,
                     "text-color": "#ffffff"
                 },
                 "events": {}
@@ -48,4 +45,4 @@ class CLIPanel {
             this.data.properties = app.setProps(props, this.data.properties);
     }
 }
-exports.CLIPanel = CLIPanel;
+exports.CLILabel = CLILabel;

@@ -2,6 +2,7 @@ export interface Iwidget {
     data: Idata;
 }
 export interface Idata {
+    type: string;
     properties: Iproperties;
 }
 export interface Iproperties {
@@ -9,14 +10,15 @@ export interface Iproperties {
     paths: Array<string>;
     styles: Istyles;
     events: object;
+    text?: string;
     [key: string]: any;
 }
 export interface Istyles {
     x: number;
     y: number;
-    width: number;
-    height: number;
-    fill: string;
+    width?: number;
+    height?: number;
+    fill?: string;
     "background-color"?: string;
     "text-color"?: string;
 }
