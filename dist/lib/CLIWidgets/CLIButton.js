@@ -23,15 +23,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CLILabel = void 0;
+exports.CLIButton = void 0;
 const app = __importStar(require("../CLIApplication"));
-class CLILabel {
+class CLIButton {
     constructor(props) {
         this.data = {
-            "type": "label",
+            "type": "button",
             "properties": {
                 "text": "lorem ipsum",
-                "accepts": ["paths", "styles", "text"],
+                "accepts": ["paths", "styles", "events", "text"],
                 "paths": [],
                 "styles": {
                     "x": 4,
@@ -45,4 +45,4 @@ class CLILabel {
             this.data.properties = app.setProps(props, this.data.properties);
     }
 }
-exports.CLILabel = CLILabel;
+exports.CLIButton = CLIButton;

@@ -23,9 +23,10 @@ export interface Istyles {
     "text-color"?: string;
 }
 export declare class CLIApplication {
+    private debug;
     private widgets;
     private curlocs;
-    constructor(option?: object);
+    constructor(option?: any);
     append(...widgets: Array<Iwidget>): void;
     show(frame: number): void;
 }
