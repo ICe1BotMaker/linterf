@@ -34,16 +34,19 @@ export interface Istyles {
 }
 
 export class CLIApplication {
+    private debug: boolean = false;
     private widgets: Array<Iwidget> = [];
-    private curlocs = {};
+    private curlocs = {
+        tab: 0
+    };
     
-    public constructor(option?: object) {
+    public constructor(option?: any) {
         this.widgets = [];
         this.curlocs = {
             tab: 0
         };
 
-        // option
+        if (option?.debug) this.debug = true;
     }
 
     public append(...widgets: Array<Iwidget>) {
@@ -59,6 +62,9 @@ export class CLIApplication {
                 process.stdout.write(`\x1b[${process.stdout.rows - 1};${process.stdout.columns}H`);
                 process.exit();
             }
+
+            if (key === '\u001b[C') this.curlocs.tab += 1;
+            if (key === '\u001b[D') this.curlocs.tab -= 1;
         });
 
         process.stdout.write(`\x1B[?25l`);
@@ -81,10 +87,45 @@ export class CLIApplication {
                 }
                 
                 if ([`label`].includes(widget.data.type)) {
+                    this.widgets.forEach((_widget: Iwidget) => {
+                        if (
+                            _widget.data.properties.styles?.width && 
+                            _widget.data.properties.styles?.height && 
+                            _widget.data.properties.styles?.['background-color'] && 
+                            (widget.data.properties.styles.x >= _widget.data.properties.styles.x && widget.data.properties.styles.x <= _widget.data.properties.styles.x + _widget.data.properties.styles.width) && 
+                            (widget.data.properties.styles.y >= _widget.data.properties.styles.y && widget.data.properties.styles.y <= _widget.data.properties.styles.y + _widget.data.properties.styles.height)) {
+                            process.stdout.write(`\x1b[${widget.data.properties.styles.y};${widget.data.properties.styles.x}H`);
+                            
+                            if (widget.data.properties.styles?.['text-color']) {
+                                console.log(chalk.hex(widget.data.properties.styles['text-color']).bgHex(_widget.data.properties.styles['background-color'])(widget.data.properties.text));
+                            } else {
+                                console.log(chalk.bgHex(_widget.data.properties.styles['background-color'])(widget.data.properties.text));
+                            }
+                        }
+                    });
+                }
+
+                if ([`button`].includes(widget.data.type)) {
+                    /* width & height */
+                    if (!widget.data.properties.styles.fill) widget.data.properties.styles.fill = `█`;
+
                     process.stdout.write(`\x1b[${widget.data.properties.styles.y};${widget.data.properties.styles.x}H`);
-                    console.log(widget.data.properties.text);
+                    if (widget.data.properties.styles.width) console.log(chalk.hex(widget.data.properties.styles['background-color'] ? widget.data.properties.styles['background-color'] : `#ffffff`)(widget.data.properties.styles.fill.repeat(widget.data.properties.styles.width)));
+                    
+                    if (widget.data.properties.styles.height) for (let i = 0; i <= widget.data.properties.styles.height; i++) {
+                        process.stdout.write(`\x1b[${widget.data.properties.styles.y + i};${widget.data.properties.styles.x}H`);
+                        if (widget.data.properties.styles.width) console.log(chalk.hex(widget.data.properties.styles['background-color'] ? widget.data.properties.styles['background-color'] : `#ffffff`)(widget.data.properties.styles.fill.repeat(widget.data.properties.styles.width)));
+                    }
+
+                    process.stdout.write(`\x1b[${widget.data.properties.styles.y};${widget.data.properties.styles.x}H`);
+                    console.log(chalk.bgHex(widget.data.properties.styles?.['background-color'] ? widget.data.properties.styles['background-color'] : `#000000`).hex(widget.data.properties.styles?.['text-color'] ? widget.data.properties.styles['text-color'] : `#ffffff`)(widget.data.properties.text));
                 }
             });
+
+            if (this.debug) {
+                process.stdout.write(`\x1b[1;1H`);
+                console.log(this.curlocs.tab);
+            }
         }, 1000 / frame);
     }
 }
