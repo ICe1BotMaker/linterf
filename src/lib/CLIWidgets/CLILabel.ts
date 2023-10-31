@@ -5,7 +5,7 @@ export class CLILabel {
         "type": "label",
         "properties": {
             "text": "lorem ipsum",
-            "accepts": ["paths", "styles", "events"],
+            "accepts": ["paths", "styles", "text"],
             "paths": [],
             "styles": {
                 "x": 4,
