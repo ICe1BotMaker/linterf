@@ -13,7 +13,7 @@ export interface Iproperties {
     accepts: Array<string>;
     paths: Array<string>;
     styles: Istyles;
-    events: object;
+    events: Ievents;
 
     text?: string;
 
@@ -31,11 +31,20 @@ export interface Istyles {
     "background-color"?: string;
 
     "text-color"?: string;
+
+    visible: boolean;
+}
+
+export interface Ievents {
+    onEnter?: Function;
+    onPut?: Function;
+    onLeave?: Function;
 }
 
 export class CLIApplication {
     private debug: boolean = false;
     private widgets: Array<Iwidget> = [];
+    private visibleWidgets: Array<Iwidget> = [];
     private curlocs = {
         tab: 0
     };
@@ -50,10 +59,23 @@ export class CLIApplication {
     }
 
     public append(...widgets: Array<Iwidget>) {
+        let exists: Array<string> = [];
+
+        widgets.forEach(widget => {
+            widget.data.properties.paths.forEach(path => {
+                if (exists.includes(path)) throw new Error(`[unique.path] ${path} is already exists`);
+                exists.push(path);
+
+                if (this.find(path)) {
+                    throw new Error(`[unique.path] ${path} is already exists`);
+                }
+            });
+        });
+
         this.widgets = this.widgets.concat(widgets);
     }
 
-    public show(frame: number) {
+    private event() {
         process.stdin.setRawMode(true);
         process.stdin.setEncoding(`utf-8`);
 
@@ -63,62 +85,121 @@ export class CLIApplication {
                 process.exit();
             }
 
-            if (key === '\u001b[C') this.curlocs.tab += 1;
-            if (key === '\u001b[D') this.curlocs.tab -= 1;
+            if (key === `\u001b[C` || key === `\u001b[D`) this.visibleWidgets[this.curlocs.tab].data.properties.events?.onLeave?.();
+            if (key === `\u001b[C`) this.curlocs.tab += 1;
+            if (key === `\u001b[D`) this.curlocs.tab -= 1;
+
+            if (key === `\r` || key === `\n`) {
+                this.visibleWidgets[this.curlocs.tab].data.properties.events?.onEnter?.();
+            }
+
+            if (this.curlocs.tab >= this.visibleWidgets.length) this.curlocs.tab = this.visibleWidgets.length - 1;
+            if (this.curlocs.tab < 0) this.curlocs.tab = 0;
+            
+            if (this.visibleWidgets[this.curlocs.tab].data.properties.styles.height !== process.stdout.rows) {
+                this.visibleWidgets[this.curlocs.tab].data.properties.events?.onPut?.();
+            }
         });
 
         process.stdout.write(`\x1B[?25l`);
+    }
+
+    public isOverLapping(widget: Iwidget, props: Istyles) {
+        const { styles } = widget.data.properties;
+
+        return (
+            styles?.width &&
+            styles?.height &&
+            styles?.["background-color"] &&
+            (props.x >= styles.x && props.x <= styles.x + styles.width) &&
+            (props.y >= styles.y && props.y <= styles.y + styles.height)
+        );
+    }
+
+    public hexbn(hex: string, brightness: number) {
+        hex = hex.replace(/^#/, ``);
+
+        if (!/^(?:[0-9a-fA-F]{3}){1,2}$/.test(hex)) return ``;
+
+        let bigint = parseInt(hex, 16);
+
+        let r = (bigint >> 16) & 255;
+        let g = (bigint >> 8) & 255;
+        let b = bigint & 255;
+
+        r -= brightness;
+        g -= brightness;
+        b -= brightness;
+
+        r = Math.max(0, Math.min(255, r));
+        g = Math.max(0, Math.min(255, g));
+        b = Math.max(0, Math.min(255, b));
+
+        const hexR = r.toString(16).padStart(2, `0`);
+        const hexG = g.toString(16).padStart(2, `0`);
+        const hexB = b.toString(16).padStart(2, `0`);
+
+        const hexColor = `#${hexR}${hexG}${hexB}`;
+
+        return hexColor;
+    }
+
+    public show(frame: number) {
+        this.event();
 
         setInterval(() => {
             console.clear();
 
-            this.widgets.forEach((widget: Iwidget) => {
-                if ([`panel`].includes(widget.data.type)) {
-                    /* width & height */
-                    if (!widget.data.properties.styles.fill) widget.data.properties.styles.fill = `█`;
+            if (this.curlocs.tab >= this.visibleWidgets.length) this.curlocs.tab = this.visibleWidgets.length - 1;
+            if (this.curlocs.tab < 0) this.curlocs.tab = 0;
 
-                    process.stdout.write(`\x1b[${widget.data.properties.styles.y};${widget.data.properties.styles.x}H`);
-                    if (widget.data.properties.styles.width) console.log(chalk.hex(widget.data.properties.styles['background-color'] ? widget.data.properties.styles['background-color'] : `#ffffff`)(widget.data.properties.styles.fill.repeat(widget.data.properties.styles.width)));
+            this.visibleWidgets = this.widgets.filter(e => e.data.properties.styles.visible);
+
+            this.visibleWidgets.forEach((widget: Iwidget, idx: number) => {
+                const { type } = widget.data;
+                const { styles, text } = widget.data.properties;
+                
+                let focus: string = ``;
+                if (styles.height !== process.stdout.rows && this.curlocs.tab === idx) focus = chalk.bgHex(this.hexbn(styles[`background-color`] || styles[`text-color`] || `#ffffff`, 25))(` `);
+
+                if (styles.visible && type === `panel`) {
+                    if (!styles.fill) styles.fill = `█`;
+
+                    process.stdout.write(`\x1b[${styles.y};${styles.x}H`);
+                    if (styles.width) console.log(focus + chalk.hex(styles[`background-color`] ? styles[`background-color`] : `#ffffff`)(styles.fill.repeat(styles.width)));
                     
-                    if (widget.data.properties.styles.height) for (let i = 0; i <= widget.data.properties.styles.height; i++) {
-                        process.stdout.write(`\x1b[${widget.data.properties.styles.y + i};${widget.data.properties.styles.x}H`);
-                        if (widget.data.properties.styles.width) console.log(chalk.hex(widget.data.properties.styles['background-color'] ? widget.data.properties.styles['background-color'] : `#ffffff`)(widget.data.properties.styles.fill.repeat(widget.data.properties.styles.width)));
+                    if (styles.height) for (let i = 0; i < styles.height; i++) {
+                        process.stdout.write(`\x1b[${styles.y + i};${styles.x}H`);
+                        if (styles.width) console.log(focus + chalk.hex(styles[`background-color`] ? styles[`background-color`] : `#ffffff`)(styles.fill.repeat(styles.width)));
                     }
                 }
                 
-                if ([`label`].includes(widget.data.type)) {
+                if (styles.visible && type === `label`) {
                     this.widgets.forEach((_widget: Iwidget) => {
-                        if (
-                            _widget.data.properties.styles?.width && 
-                            _widget.data.properties.styles?.height && 
-                            _widget.data.properties.styles?.['background-color'] && 
-                            (widget.data.properties.styles.x >= _widget.data.properties.styles.x && widget.data.properties.styles.x <= _widget.data.properties.styles.x + _widget.data.properties.styles.width) && 
-                            (widget.data.properties.styles.y >= _widget.data.properties.styles.y && widget.data.properties.styles.y <= _widget.data.properties.styles.y + _widget.data.properties.styles.height)) {
-                            process.stdout.write(`\x1b[${widget.data.properties.styles.y};${widget.data.properties.styles.x}H`);
-                            
-                            if (widget.data.properties.styles?.['text-color']) {
-                                console.log(chalk.hex(widget.data.properties.styles['text-color']).bgHex(_widget.data.properties.styles['background-color'])(widget.data.properties.text));
-                            } else {
-                                console.log(chalk.bgHex(_widget.data.properties.styles['background-color'])(widget.data.properties.text));
-                            }
+                        if (this.isOverLapping(_widget, styles)) {
+                            process.stdout.write(`\x1b[${styles.y};${styles.x}H`);
+
+                            const backgroundColor = _widget.data.properties.styles["background-color"] || `#000000`;
+                            const textColor = styles["text-color"] || _widget.data.properties.styles["text-color"] || `#ffffff`;
+
+                            console.log(focus + chalk.bgHex(backgroundColor)(chalk.hex(textColor)(text)));
                         }
                     });
                 }
 
-                if ([`button`].includes(widget.data.type)) {
-                    /* width & height */
-                    if (!widget.data.properties.styles.fill) widget.data.properties.styles.fill = `█`;
+                if (styles.visible && type === `button`) {
+                    if (!styles.fill) styles.fill = `█`;
 
-                    process.stdout.write(`\x1b[${widget.data.properties.styles.y};${widget.data.properties.styles.x}H`);
-                    if (widget.data.properties.styles.width) console.log(chalk.hex(widget.data.properties.styles['background-color'] ? widget.data.properties.styles['background-color'] : `#ffffff`)(widget.data.properties.styles.fill.repeat(widget.data.properties.styles.width)));
+                    process.stdout.write(`\x1b[${styles.y};${styles.x}H`);
+                    if (styles.width) console.log(focus + chalk.hex(styles[`background-color`] ? styles[`background-color`] : `#ffffff`)(styles.fill.repeat(styles.width)));
                     
-                    if (widget.data.properties.styles.height) for (let i = 0; i <= widget.data.properties.styles.height; i++) {
-                        process.stdout.write(`\x1b[${widget.data.properties.styles.y + i};${widget.data.properties.styles.x}H`);
-                        if (widget.data.properties.styles.width) console.log(chalk.hex(widget.data.properties.styles['background-color'] ? widget.data.properties.styles['background-color'] : `#ffffff`)(widget.data.properties.styles.fill.repeat(widget.data.properties.styles.width)));
+                    if (styles.height) for (let i = 0; i < styles.height; i++) {
+                        process.stdout.write(`\x1b[${styles.y + i};${styles.x}H`);
+                        if (styles.width) console.log(focus + chalk.hex(styles[`background-color`] ? styles[`background-color`] : `#ffffff`)(styles.fill.repeat(styles.width)));
                     }
 
-                    process.stdout.write(`\x1b[${widget.data.properties.styles.y};${widget.data.properties.styles.x}H`);
-                    console.log(chalk.bgHex(widget.data.properties.styles?.['background-color'] ? widget.data.properties.styles['background-color'] : `#000000`).hex(widget.data.properties.styles?.['text-color'] ? widget.data.properties.styles['text-color'] : `#ffffff`)(widget.data.properties.text));
+                    process.stdout.write(`\x1b[${styles.y};${styles.x}H`);
+                    console.log(focus + chalk.bgHex(styles?.[`background-color`] ? styles[`background-color`] : `#000000`).hex(styles?.[`text-color`] ? styles[`text-color`] : `#ffffff`)(text));
                 }
             });
 
@@ -127,6 +208,15 @@ export class CLIApplication {
                 console.log(this.curlocs.tab);
             }
         }, 1000 / frame);
+    }
+
+    public find(path: string) {
+        return this.widgets.find(value => value.data.properties.paths.includes(path));
+    }
+
+    public modify(path: string, props: Iproperties) {
+        const widgetIdx = this.widgets.findIndex(value => value.data.properties.paths.includes(path));
+        this.widgets[widgetIdx].data.properties = setProps(props, this.widgets[widgetIdx].data.properties);
     }
 }
 
