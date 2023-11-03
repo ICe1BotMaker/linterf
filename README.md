@@ -1,4 +1,9 @@
 # 💫 realistic-gui
+
+<img src="imgs/video.gif" style="width: 100%">
+
+<br>
+
 **nodecli-gui 심화버전**
 
 - **기본 위젯**: Panel, Button, Label, Checkbox, RadioButton, Image, Textbox, Webview
