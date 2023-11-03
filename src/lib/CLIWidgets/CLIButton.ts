@@ -10,7 +10,8 @@ export class CLIButton {
             "styles": {
                 "x": 4,
                 "y": 3,
-                "text-color": "#ffffff"
+                "text-color": "#ffffff",
+                "visible": true
             },
             "events": {}
         }

@@ -10,10 +10,11 @@ export class CLIPanel {
                 "x": 0,
                 "y": 0,
                 "width": process.stdout.columns,
-                "height": process.stdout.rows - 1,
+                "height": process.stdout.rows,
                 "fill": "█",
                 "background-color": "#000000",
-                "text-color": "#ffffff"
+                "text-color": "#ffffff",
+                "visible": true
             },
             "events": {}
         }
