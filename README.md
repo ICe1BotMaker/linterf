@@ -1,17 +1,61 @@
 # 💫 realistic-gui
 
+(**under development**)
+
 <img src="imgs/video.gif" style="width: 100%">
 
-<br>
+### 💬 An advanced version of nodecli-gui
 
-**nodecli-gui 심화버전**
+- **Widgets**: Panel, Button, Label, Checkbox, RadioButton, Image, Textbox, Webview
+- **Presets**: Modal, (create-later)
+- **Functions**: TCG (3D CLI Graphic), (create-later)
 
-- **기본 위젯**: Panel, Button, Label, Checkbox, RadioButton, Image, Textbox, Webview
-- **제공 프리셋**: Modal, (추 후 작성)
-- **기능**: TCG (3D CLI Graphic), (추 후 작성)
+#### 🎬 **Webview ?**
+- Use the Web-related node.js library to take screenshots over the Internet and convert them into text to display
 
-#### **Webview ?**
-- 웹 관련 node.js 라이브러리를 사용해 인터넷을 사용, 스크린샷하고 텍스트로 변환하여 보여주기
+#### 🆕 **TCG ?**
+- A 3D engine using cli, and text is drawn on the screen using location and size data.
 
-#### **TCG ?**
-- cli로 3d엔진을 개발, 위치와 크기 데이터를 가지고 화면에 텍스트로 그려주기
+### 💾 Usage
+
+```jsx
+const { CLIApplication, CLIPanel, CLILabel, CLIButton } = require(`realistic-gui`);
+
+const app = new CLIApplication();
+
+const component = <CLIPanel styles={{ "background-color": "#EEEEEE" }}>
+    <CLILabel text="simple-modal-app" styles={{ "text-color": "#222831", x: 4, y: 2 }} />
+
+    <CLILabel paths={["root/label1"]} text="open-modal" styles={{ "text-color": "#00ADB5", x: 4, y: 3, visible: false }} />
+    <CLIButton text=" button " styles={{ "background-color": "#222831", "text-color": "#EEEEEE", x: 4, y: 4, width: 8, height: 1 }} events={{
+        "onPut": () => {
+            timeout = setTimeout(() => {
+                app.modify(`root/label1`, { styles: { visible: true } });
+            }, 500);
+        },
+        "onLeave": () => {
+            clearTimeout(timeout);
+            app.modify(`root/label1`, { styles: { visible: false } });
+        },
+        "onEnter": () => {
+            app.modify(`root/modalp`, { styles: { visible: true } });
+            app.modify(`root/modall`, { styles: { visible: true } });
+            app.modify(`root/modalb`, { styles: { visible: true } });
+        }
+    }} />
+
+    <CLIPanel paths={["root/modalp"]} styles={{ "background-color": "#222831", "visible": false, x: 8, y: 2, "width": 50, "height": 10 }}>
+        <CLILabel paths={["root/modall"]} text="modal-title" styles={{ "text-color": "#EEEEEE", x: 12, y: 3, "visible": false }} />
+        <CLIButton paths={["root/modalb"]} text=" close " styles={{ "background-color": "#EEEEEE", "text-color": "#222831", x: 12, y: 4, width: 6, height: 1, visible: false }} events={{
+            "onEnter": () => {
+                app.modify(`root/modalp`, { styles: { visible: false } });
+                app.modify(`root/modall`, { styles: { visible: false } });
+                app.modify(`root/modalb`, { styles: { visible: false } });
+            }
+        }} />
+    </CLIPanel>
+</CLIPanel>;
+
+app.append(component);
+app.show(30);
+```
