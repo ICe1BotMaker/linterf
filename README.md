@@ -1,4 +1,4 @@
-# 💫 realistic-gui
+# 💫 linterf
 
 (**under development**)
 
@@ -19,13 +19,13 @@
 ### 💾 Installation
 
 ```bash
-$ npm install realistic-gui
+$ npm install linterf
 ```
 
 ### 💾 Usage
 
 ```jsx
-const { CLIApplication, CLIPanel, CLILabel, CLIButton } = require(`realistic-gui`);
+const { CLIApplication, CLIPanel, CLILabel, CLIButton } = require(`linterf`);
 
 const app = new CLIApplication();
 
