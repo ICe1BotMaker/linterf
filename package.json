@@ -1,5 +1,5 @@
 {
-    "name": "realistic-gui",
+    "name": "linterf",
     "version": "0.1.0",
     "description": "nodecli-gui (deep ver.)",
     "main": "dist/index.js",
