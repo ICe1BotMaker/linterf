@@ -16,5 +16,8 @@
         "@babel/plugin-transform-react-jsx": "^7.22.15",
         "@babel/preset-env": "^7.23.2",
         "@babel/preset-react": "^7.22.15"
+    },
+    "scripts": {
+        "test": "npx babel tests --out-dir tests"
     }
 }
