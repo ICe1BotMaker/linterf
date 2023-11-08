@@ -2,6 +2,7 @@ import chalk from 'chalk';
 
 export interface Iwidget {
     data: Idata;
+    prerun: Function;
 }
 
 export interface Idata {
@@ -16,6 +17,8 @@ export interface Iproperties {
     events: Ievents;
 
     text?: string;
+
+    checked?: boolean;
 
     [key: string]: any;
 }
@@ -33,6 +36,8 @@ export interface Istyles {
     "text-color"?: string;
 
     visible: boolean;
+
+    check?: Array<string>;
 }
 
 export interface Ievents {
@@ -44,7 +49,7 @@ export interface Ievents {
 export class CLIApplication {
     private debug: boolean = false;
     private widgets: Array<Iwidget> = [];
-    private visibleWidgets: Array<Iwidget> = [];
+    private Vwidgets: Array<Iwidget> = [];
     private curlocs = {
         tab: 0
     };
@@ -85,19 +90,19 @@ export class CLIApplication {
                 process.exit();
             }
 
-            if (key === `\u001b[C` || key === `\u001b[D`) this.visibleWidgets[this.curlocs.tab].data.properties.events?.onLeave?.();
+            if (key === `\u001b[C` || key === `\u001b[D`) this.Vwidgets[this.curlocs.tab].data.properties.events?.onLeave?.();
             if (key === `\u001b[C`) this.curlocs.tab += 1;
             if (key === `\u001b[D`) this.curlocs.tab -= 1;
 
             if (key === `\r` || key === `\n`) {
-                this.visibleWidgets[this.curlocs.tab].data.properties.events?.onEnter?.();
+                this.Vwidgets[this.curlocs.tab].data.properties.events?.onEnter?.();
             }
 
-            if (this.curlocs.tab >= this.visibleWidgets.length) this.curlocs.tab = this.visibleWidgets.length - 1;
+            if (this.curlocs.tab >= this.Vwidgets.length) this.curlocs.tab = this.Vwidgets.length - 1;
             if (this.curlocs.tab < 0) this.curlocs.tab = 0;
             
-            if (this.visibleWidgets[this.curlocs.tab].data.properties.styles.height !== process.stdout.rows) {
-                this.visibleWidgets[this.curlocs.tab].data.properties.events?.onPut?.();
+            if (this.Vwidgets[this.curlocs.tab].data.properties.styles.height !== process.stdout.rows) {
+                this.Vwidgets[this.curlocs.tab].data.properties.events?.onPut?.();
             }
         });
 
@@ -150,57 +155,22 @@ export class CLIApplication {
         setInterval(() => {
             console.clear();
 
-            if (this.curlocs.tab >= this.visibleWidgets.length) this.curlocs.tab = this.visibleWidgets.length - 1;
+            if (this.curlocs.tab >= this.Vwidgets.length) this.curlocs.tab = this.Vwidgets.length - 1;
             if (this.curlocs.tab < 0) this.curlocs.tab = 0;
 
-            this.visibleWidgets = this.widgets.filter(e => e.data.properties.styles.visible);
+            this.Vwidgets = this.widgets.filter(e => e.data.properties.styles.visible);
 
-            this.visibleWidgets.forEach((widget: Iwidget, idx: number) => {
+            this.Vwidgets.forEach((widget: Iwidget, idx: number) => {
                 const { type } = widget.data;
-                const { styles, text } = widget.data.properties;
+                const { styles } = widget.data.properties;
                 
                 let focus: string = ``;
                 if (styles.height !== process.stdout.rows && this.curlocs.tab === idx) focus = chalk.bgHex(this.hexbn(styles[`background-color`] || styles[`text-color`] || `#ffffff`, 25))(` `);
 
-                if (styles.visible && type === `panel`) {
-                    if (!styles.fill) styles.fill = `█`;
-
-                    process.stdout.write(`\x1b[${styles.y};${styles.x}H`);
-                    if (styles.width) console.log(focus + chalk.hex(styles[`background-color`] ? styles[`background-color`] : `#ffffff`)(styles.fill.repeat(styles.width)));
-                    
-                    if (styles.height) for (let i = 0; i < styles.height; i++) {
-                        process.stdout.write(`\x1b[${styles.y + i};${styles.x}H`);
-                        if (styles.width) console.log(focus + chalk.hex(styles[`background-color`] ? styles[`background-color`] : `#ffffff`)(styles.fill.repeat(styles.width)));
-                    }
-                }
-                
-                if (styles.visible && type === `label`) {
-                    this.widgets.forEach((_widget: Iwidget) => {
-                        if (this.isOverLapping(_widget, styles)) {
-                            process.stdout.write(`\x1b[${styles.y};${styles.x}H`);
-
-                            const backgroundColor = _widget.data.properties.styles["background-color"] || `#000000`;
-                            const textColor = styles["text-color"] || _widget.data.properties.styles["text-color"] || `#ffffff`;
-
-                            console.log(focus + chalk.bgHex(backgroundColor)(chalk.hex(textColor)(text)));
-                        }
-                    });
-                }
-
-                if (styles.visible && type === `button`) {
-                    if (!styles.fill) styles.fill = `█`;
-
-                    process.stdout.write(`\x1b[${styles.y};${styles.x}H`);
-                    if (styles.width) console.log(focus + chalk.hex(styles[`background-color`] ? styles[`background-color`] : `#ffffff`)(styles.fill.repeat(styles.width)));
-                    
-                    if (styles.height) for (let i = 0; i < styles.height; i++) {
-                        process.stdout.write(`\x1b[${styles.y + i};${styles.x}H`);
-                        if (styles.width) console.log(focus + chalk.hex(styles[`background-color`] ? styles[`background-color`] : `#ffffff`)(styles.fill.repeat(styles.width)));
-                    }
-
-                    process.stdout.write(`\x1b[${styles.y};${styles.x}H`);
-                    console.log(focus + chalk.bgHex(styles?.[`background-color`] ? styles[`background-color`] : `#000000`).hex(styles?.[`text-color`] ? styles[`text-color`] : `#ffffff`)(text));
-                }
+                if (styles.visible && type === `panel`) widget.prerun(widget, focus);
+                if (styles.visible && type === `label`) widget.prerun(this.widgets, widget, this.isOverLapping, focus);
+                if (styles.visible && type === `button`) widget.prerun(widget, focus);
+                if (styles.visible && type === `checkbox`) widget.prerun(this.widgets, widget, this.isOverLapping, focus);
             });
 
             if (this.debug) {
