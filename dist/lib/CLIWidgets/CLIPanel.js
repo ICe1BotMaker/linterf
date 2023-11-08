@@ -22,8 +22,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CLIPanel = void 0;
+const chalk_1 = __importDefault(require("chalk"));
 const app = __importStar(require("../CLIApplication"));
 class CLIPanel {
     constructor(props) {
@@ -47,6 +51,20 @@ class CLIPanel {
         };
         if (props)
             this.data.properties = app.setProps(props, this.data.properties);
+    }
+    prerun(widget, focus) {
+        const { styles } = widget.data.properties;
+        if (!styles.fill)
+            styles.fill = `█`;
+        process.stdout.write(`\x1b[${styles.y};${styles.x}H`);
+        if (styles.width)
+            console.log(focus + chalk_1.default.hex(styles[`background-color`] ? styles[`background-color`] : `#ffffff`)(styles.fill.repeat(styles.width)));
+        if (styles.height)
+            for (let i = 0; i < styles.height; i++) {
+                process.stdout.write(`\x1b[${styles.y + i};${styles.x}H`);
+                if (styles.width)
+                    console.log(focus + chalk_1.default.hex(styles[`background-color`] ? styles[`background-color`] : `#ffffff`)(styles.fill.repeat(styles.width)));
+            }
     }
 }
 exports.CLIPanel = CLIPanel;

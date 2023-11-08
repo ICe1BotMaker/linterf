@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CLIButton = exports.CLILabel = exports.CLIPanel = exports.CLIApplication = void 0;
+exports.CLICheckbox = exports.CLIButton = exports.CLILabel = exports.CLIPanel = exports.CLIApplication = void 0;
 var CLIApplication_1 = require("./lib/CLIApplication");
 Object.defineProperty(exports, "CLIApplication", { enumerable: true, get: function () { return CLIApplication_1.CLIApplication; } });
 var CLIPanel_1 = require("./lib/CLIWidgets/CLIPanel");
@@ -9,3 +9,5 @@ var CLILabel_1 = require("./lib/CLIWidgets/CLILabel");
 Object.defineProperty(exports, "CLILabel", { enumerable: true, get: function () { return CLILabel_1.CLILabel; } });
 var CLIButton_1 = require("./lib/CLIWidgets/CLIButton");
 Object.defineProperty(exports, "CLIButton", { enumerable: true, get: function () { return CLIButton_1.CLIButton; } });
+var CLICheckbox_1 = require("./lib/CLIWidgets/CLICheckbox");
+Object.defineProperty(exports, "CLICheckbox", { enumerable: true, get: function () { return CLICheckbox_1.CLICheckbox; } });

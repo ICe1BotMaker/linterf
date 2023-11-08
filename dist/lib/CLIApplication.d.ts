@@ -1,5 +1,6 @@
 export interface Iwidget {
     data: Idata;
+    prerun: Function;
 }
 export interface Idata {
     type: string;
@@ -11,6 +12,7 @@ export interface Iproperties {
     styles: Istyles;
     events: Ievents;
     text?: string;
+    checked?: boolean;
     [key: string]: any;
 }
 export interface Istyles {
@@ -22,6 +24,7 @@ export interface Istyles {
     "background-color"?: string;
     "text-color"?: string;
     visible: boolean;
+    check?: Array<string>;
 }
 export interface Ievents {
     onEnter?: Function;
@@ -31,7 +34,7 @@ export interface Ievents {
 export declare class CLIApplication {
     private debug;
     private widgets;
-    private visibleWidgets;
+    private Vwidgets;
     private curlocs;
     constructor(option?: any);
     append(...widgets: Array<Iwidget>): void;

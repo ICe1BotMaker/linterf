@@ -22,8 +22,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CLILabel = void 0;
+const chalk_1 = __importDefault(require("chalk"));
 const app = __importStar(require("../CLIApplication"));
 class CLILabel {
     constructor(props) {
@@ -34,8 +38,8 @@ class CLILabel {
                 "accepts": ["paths", "styles", "text"],
                 "paths": [],
                 "styles": {
-                    "x": 4,
-                    "y": 3,
+                    "x": 1,
+                    "y": 1,
                     "text-color": "#ffffff",
                     "visible": true
                 },
@@ -44,6 +48,25 @@ class CLILabel {
         };
         if (props)
             this.data.properties = app.setProps(props, this.data.properties);
+    }
+    prerun(widgets, widget, func, focus) {
+        const { styles, text } = widget.data.properties;
+        let bwidget = false;
+        widgets.forEach((_widget) => {
+            if (func(_widget, styles)) {
+                bwidget = true;
+                process.stdout.write(`\x1b[${styles.y};${styles.x}H`);
+                const backgroundColor = _widget.data.properties.styles["background-color"] || `#000000`;
+                const textColor = styles["text-color"] || _widget.data.properties.styles["text-color"] || `#ffffff`;
+                console.log(focus + chalk_1.default.bgHex(backgroundColor)(chalk_1.default.hex(textColor)(text)));
+            }
+        });
+        if (!bwidget) {
+            process.stdout.write(`\x1b[${styles.y};${styles.x}H`);
+            const backgroundColor = `#000000`;
+            const textColor = styles["text-color"] || `#ffffff`;
+            console.log(focus + chalk_1.default.bgHex(backgroundColor)(chalk_1.default.hex(textColor)(text)));
+        }
     }
 }
 exports.CLILabel = CLILabel;
