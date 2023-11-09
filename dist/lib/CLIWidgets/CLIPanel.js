@@ -34,8 +34,9 @@ class CLIPanel {
         this.data = {
             "type": "panel",
             "properties": {
-                "accepts": ["paths", "styles"],
+                "accepts": ["paths", "styles", "global"],
                 "paths": [],
+                "global": "",
                 "styles": {
                     "x": 0,
                     "y": 0,
@@ -46,7 +47,8 @@ class CLIPanel {
                     "text-color": "#ffffff",
                     "visible": true
                 },
-                "events": {}
+                "events": {},
+                "defaultEvents": {}
             }
         };
         if (props)

@@ -36,8 +36,9 @@ class CLICheckbox {
             "properties": {
                 "text": "lorem ipsum",
                 "checked": false,
-                "accepts": ["paths", "styles", "text", "events", "checked"],
+                "accepts": ["paths", "styles", "text", "events", "checked", "global"],
                 "paths": [],
+                "global": "",
                 "styles": {
                     "x": 1,
                     "y": 1,
@@ -45,7 +46,8 @@ class CLICheckbox {
                     "visible": true,
                     "check": ["✅ ", "❌ "]
                 },
-                "events": {
+                "events": {},
+                "defaultEvents": {
                     "onEnter": () => {
                         this.data.properties.checked = !this.data.properties.checked;
                     }

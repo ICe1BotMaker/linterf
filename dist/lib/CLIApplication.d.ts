@@ -9,8 +9,10 @@ export interface Idata {
 export interface Iproperties {
     accepts: Array<string>;
     paths: Array<string>;
+    global: string;
     styles: Istyles;
     events: Ievents;
+    defaultEvents: Ievents;
     text?: string;
     checked?: boolean;
     [key: string]: any;

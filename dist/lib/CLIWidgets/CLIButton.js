@@ -35,15 +35,17 @@ class CLIButton {
             "type": "button",
             "properties": {
                 "text": "lorem ipsum",
-                "accepts": ["paths", "styles", "events", "text"],
+                "accepts": ["paths", "styles", "events", "text", "global"],
                 "paths": [],
+                "global": "",
                 "styles": {
                     "x": 1,
                     "y": 1,
                     "text-color": "#ffffff",
                     "visible": true
                 },
-                "events": {}
+                "events": {},
+                "defaultEvents": {}
             }
         };
         if (props)
