@@ -1,7 +1,7 @@
 module.exports = function(babel) {
     const { types: t } = babel;
 
-    const supportedElements = ['CLILabel', 'CLIButton', 'CLIPanel'];
+    const supportedElements = ['CLILabel', 'CLIButton', 'CLIPanel', 'CLICheckbox', 'CLIRadio'];
 
     return {
         name: 'transform-jsx-syntax',
