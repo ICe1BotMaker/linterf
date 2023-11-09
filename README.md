@@ -6,7 +6,7 @@
 
 ### 💬 An advanced version of nodecli-gui
 
-- **Widgets**: Panel, Button, Label, Checkbox, RadioButton, Image, Textbox, Webview
+- **Widgets**: Panel, Button, Label, Checkbox, Radio, Image, Textbox, Webview
 - **Presets**: Modal, (create-later)
 - **Functions**: TCG (3D CLI Graphic), (create-later)
 
@@ -25,7 +25,7 @@ $ npm install linterf
 ### 💾 Usage
 
 ```jsx
-const { CLIApplication, CLIPanel, CLILabel, CLIButton } = require(`linterf`);
+const { CLIApplication, CLILabel } = require(`linterf`);
 
 const app = new CLIApplication();
 
