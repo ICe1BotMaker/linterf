@@ -6,15 +6,17 @@ export class CLILabel {
         "type": "label",
         "properties": {
             "text": "lorem ipsum",
-            "accepts": ["paths", "styles", "text"],
+            "accepts": ["paths", "styles", "text", "global"],
             "paths": [],
+            "global": "",
             "styles": {
                 "x": 1,
                 "y": 1,
                 "text-color": "#ffffff",
                 "visible": true
             },
-            "events": {}
+            "events": {},
+            "defaultEvents": {}
         }
     };
 

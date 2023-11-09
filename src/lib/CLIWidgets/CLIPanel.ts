@@ -5,8 +5,9 @@ export class CLIPanel {
     public data: app.Idata = {
         "type": "panel",
         "properties": {
-            "accepts": ["paths", "styles"],
+            "accepts": ["paths", "styles", "global"],
             "paths": [],
+            "global": "",
             "styles": {
                 "x": 0,
                 "y": 0,
@@ -17,7 +18,8 @@ export class CLIPanel {
                 "text-color": "#ffffff",
                 "visible": true
             },
-            "events": {}
+            "events": {},
+            "defaultEvents": {}
         }
     };
 
