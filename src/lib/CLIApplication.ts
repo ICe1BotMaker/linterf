@@ -13,8 +13,10 @@ export interface Idata {
 export interface Iproperties {
     accepts: Array<string>;
     paths: Array<string>;
+    global: string;
     styles: Istyles;
     events: Ievents;
+    defaultEvents: Ievents;
 
     text?: string;
 
@@ -66,8 +68,8 @@ export class CLIApplication {
     public append(...widgets: Array<Iwidget>) {
         let exists: Array<string> = [];
 
-        widgets.forEach(widget => {
-            widget.data.properties.paths.forEach(path => {
+        widgets.forEach((widget: Iwidget) => {
+            widget.data.properties.paths.forEach((path: string) => {
                 if (exists.includes(path)) throw new Error(`[unique.path] ${path} is already exists`);
                 exists.push(path);
 
@@ -90,12 +92,20 @@ export class CLIApplication {
                 process.exit();
             }
 
-            if (key === `\u001b[C` || key === `\u001b[D`) this.Vwidgets[this.curlocs.tab].data.properties.events?.onLeave?.();
+            if (key === `\u001b[C` || key === `\u001b[D`) {
+                this.Vwidgets[this.curlocs.tab].data.properties.events?.onLeave?.();
+                this.Vwidgets[this.curlocs.tab].data.properties.defaultEvents?.onLeave?.();
+            }
             if (key === `\u001b[C`) this.curlocs.tab += 1;
             if (key === `\u001b[D`) this.curlocs.tab -= 1;
 
             if (key === `\r` || key === `\n`) {
+                let result = this.Vwidgets[this.curlocs.tab].data.properties.defaultEvents?.onEnter?.();
                 this.Vwidgets[this.curlocs.tab].data.properties.events?.onEnter?.();
+
+                if (this.Vwidgets[this.curlocs.tab].data.type === `radio`) {
+                    this.widgets = result;
+                }
             }
 
             if (this.curlocs.tab >= this.Vwidgets.length) this.curlocs.tab = this.Vwidgets.length - 1;
@@ -103,6 +113,7 @@ export class CLIApplication {
             
             if (this.Vwidgets[this.curlocs.tab].data.properties.styles.height !== process.stdout.rows) {
                 this.Vwidgets[this.curlocs.tab].data.properties.events?.onPut?.();
+                this.Vwidgets[this.curlocs.tab].data.properties.defaultEvents?.onPut?.();
             }
         });
 
@@ -171,6 +182,7 @@ export class CLIApplication {
                 if (styles.visible && type === `label`) widget.prerun(this.widgets, widget, this.isOverLapping, focus);
                 if (styles.visible && type === `button`) widget.prerun(widget, focus);
                 if (styles.visible && type === `checkbox`) widget.prerun(this.widgets, widget, this.isOverLapping, focus);
+                if (styles.visible && type === `radio`) widget.prerun(this.widgets, widget, this.isOverLapping, focus);
             });
 
             if (this.debug) {
