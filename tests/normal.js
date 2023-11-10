@@ -1,4 +1,4 @@
-const { CLIApplication, CLIPanel, CLILabel, CLIButton, CLICheckbox, CLIRadio } = require(`../`);
+const { CLIApplication, CLIPanel, CLILabel, CLIButton, CLICheckbox, CLIRadio, CLIImage, CLIWebview } = require(`../`);
 
 const app = new CLIApplication();
 
@@ -26,5 +26,8 @@ const button = new CLIButton({ paths: ["root/submit"], text: " pay ", styles: { 
 
 const label = new CLILabel({ text: "pay ok.", paths: ["root/label"], styles: { visible: false, x: 8, y: 7 } });
 
-app.append(title, radio1, radio2, checkbox, button, label);
+const image = new CLIImage({ styles: { x: 1, y: 10, width: 15, height: 15, img: "./imgs/dog.jpg" } });
+const web = new CLIWebview({ styles: { x: 20, y: 10 } });
+
+app.append(title, radio1, radio2, checkbox, button, label, image, web);
 app.show(30);
