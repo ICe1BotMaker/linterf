@@ -27,6 +27,9 @@ export interface Istyles {
     "text-color"?: string;
     visible: boolean;
     check?: Array<string>;
+    img?: string;
+    page?: string;
+    "img-pixels"?: (string | Array<string>);
 }
 export interface Ievents {
     onEnter?: Function;

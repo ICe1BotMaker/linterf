@@ -122,6 +122,8 @@ class CLIApplication {
                     widget.prerun(this.widgets, widget, this.isOverLapping, focus);
                 if (styles.visible && type === `radio`)
                     widget.prerun(this.widgets, widget, this.isOverLapping, focus);
+                if (styles.visible && type === `image`)
+                    widget.prerun(widget);
             });
             if (this.debug) {
                 process.stdout.write(`\x1b[1;1H`);
