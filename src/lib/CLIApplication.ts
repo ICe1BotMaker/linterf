@@ -40,6 +40,10 @@ export interface Istyles {
     visible: boolean;
 
     check?: Array<string>;
+
+    img?: string;
+    page?: string;
+    "img-pixels"?: (string | Array<string>);
 }
 
 export interface Ievents {
@@ -183,6 +187,7 @@ export class CLIApplication {
                 if (styles.visible && type === `button`) widget.prerun(widget, focus);
                 if (styles.visible && type === `checkbox`) widget.prerun(this.widgets, widget, this.isOverLapping, focus);
                 if (styles.visible && type === `radio`) widget.prerun(this.widgets, widget, this.isOverLapping, focus);
+                if (styles.visible && type === `image`) widget.prerun(widget);
             });
 
             if (this.debug) {
