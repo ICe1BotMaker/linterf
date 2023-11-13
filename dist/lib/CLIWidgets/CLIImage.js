@@ -32,7 +32,7 @@ const app = __importStar(require("../CLIApplication"));
 class CLIImage {
     constructor(props) {
         this.text = ``;
-        this.doing = false;
+        this.isDoing = false;
         this.data = {
             "type": "image",
             "properties": {
@@ -63,8 +63,8 @@ class CLIImage {
                 console.log(line);
             });
         }
-        else if (!this.doing) {
-            this.doing = true;
+        else if (!this.isDoing) {
+            this.isDoing = true;
             (0, image_to_ascii_1.default)(styles.img, {
                 size: {
                     width: styles.width,

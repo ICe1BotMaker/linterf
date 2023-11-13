@@ -1,6 +1,7 @@
 export interface Iwidget {
     data: Idata;
     prerun: Function;
+    isTyping?: boolean;
 }
 export interface Idata {
     type: string;
@@ -14,6 +15,7 @@ export interface Iproperties {
     events: Ievents;
     defaultEvents: Ievents;
     text?: string;
+    placeholder?: string;
     checked?: boolean;
     [key: string]: any;
 }
@@ -25,6 +27,7 @@ export interface Istyles {
     fill?: string;
     "background-color"?: string;
     "text-color"?: string;
+    "placeholder-color"?: string;
     visible: boolean;
     check?: Array<string>;
     img?: string;

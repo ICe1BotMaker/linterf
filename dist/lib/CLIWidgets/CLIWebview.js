@@ -33,7 +33,7 @@ const app = __importStar(require("../CLIApplication"));
 class CLIWebview {
     constructor(props) {
         this.text = ``;
-        this.doing = false;
+        this.isDoing = false;
         this.data = {
             "type": "image",
             "properties": {
@@ -63,8 +63,8 @@ class CLIWebview {
                 console.log(line);
             });
         }
-        else if (!this.doing) {
-            this.doing = true;
+        else if (!this.isDoing) {
+            this.isDoing = true;
             const browser = puppeteer_1.default.launch();
             const page = browser.then(value => value.newPage());
             page.then(value => {

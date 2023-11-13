@@ -60,18 +60,18 @@ class CLICheckbox {
     prerun(widgets, widget, func, focus) {
         var _a, _b;
         const { styles, text } = widget.data.properties;
-        let bwidget = false;
+        let isOverLapping = false;
         widgets.forEach((_widget) => {
             var _a, _b;
             if (func(_widget, styles)) {
-                bwidget = true;
+                isOverLapping = true;
                 process.stdout.write(`\x1b[${styles.y};${styles.x}H`);
                 const backgroundColor = _widget.data.properties.styles["background-color"] || `#000000`;
                 const textColor = styles["text-color"] || _widget.data.properties.styles["text-color"] || `#ffffff`;
                 console.log(focus + (this.data.properties.checked ? (_a = styles.check) === null || _a === void 0 ? void 0 : _a[0] : (_b = styles.check) === null || _b === void 0 ? void 0 : _b[1]) + chalk_1.default.bgHex(backgroundColor)(chalk_1.default.hex(textColor)(text)));
             }
         });
-        if (!bwidget) {
+        if (!isOverLapping) {
             process.stdout.write(`\x1b[${styles.y};${styles.x}H`);
             const backgroundColor = `#000000`;
             const textColor = styles["text-color"] || `#ffffff`;
