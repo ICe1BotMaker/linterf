@@ -3,6 +3,7 @@ import chalk from 'chalk';
 export interface Iwidget {
     data: Idata;
     prerun: Function;
+    isTyping?: boolean;
 }
 
 export interface Idata {
@@ -19,6 +20,7 @@ export interface Iproperties {
     defaultEvents: Ievents;
 
     text?: string;
+    placeholder?: string;
 
     checked?: boolean;
 
@@ -36,6 +38,7 @@ export interface Istyles {
     "background-color"?: string;
 
     "text-color"?: string;
+    "placeholder-color"?: string;
 
     visible: boolean;
 
@@ -57,13 +60,15 @@ export class CLIApplication {
     private widgets: Array<Iwidget> = [];
     private Vwidgets: Array<Iwidget> = [];
     private curlocs = {
-        tab: 0
+        tab: 0,
+        textloc: 0
     };
     
     public constructor(option?: any) {
         this.widgets = [];
         this.curlocs = {
-            tab: 0
+            tab: 0,
+            textloc: 0
         };
 
         if (option?.debug) this.debug = true;
@@ -96,28 +101,52 @@ export class CLIApplication {
                 process.exit();
             }
 
-            if (key === `\u001b[C` || key === `\u001b[D`) {
-                this.Vwidgets[this.curlocs.tab].data.properties.events?.onLeave?.();
-                this.Vwidgets[this.curlocs.tab].data.properties.defaultEvents?.onLeave?.();
-            }
-            if (key === `\u001b[C`) this.curlocs.tab += 1;
-            if (key === `\u001b[D`) this.curlocs.tab -= 1;
+            const selected = this.Vwidgets[this.curlocs.tab];
 
-            if (key === `\r` || key === `\n`) {
-                let result = this.Vwidgets[this.curlocs.tab].data.properties.defaultEvents?.onEnter?.();
-                this.Vwidgets[this.curlocs.tab].data.properties.events?.onEnter?.();
+            if (selected.isTyping && selected.data.type === `textbox`) {
+                if (selected.data.properties.text && (this.curlocs.textloc < selected.data.properties.text.length) && key === `\u001b[C`) this.curlocs.textloc += 1;
+                if (this.curlocs.textloc !> 0 && key === `\u001b[D`) this.curlocs.textloc -= 1;
+                
+                if (![`\u001b[D`, `\u001b[C`, `\u0008`, `\r`, `\n`].includes(key)) {
+                    selected.data.properties.text = `${selected.data.properties.text?.substring(0, this.curlocs.textloc)}${key}${selected.data.properties.text?.substring(this.curlocs.textloc, selected.data.properties.text.length)}`;
+                    this.curlocs.textloc += 1;
+                }
 
-                if (this.Vwidgets[this.curlocs.tab].data.type === `radio`) {
-                    this.widgets = result;
+                if (key === `\r` || key === `\n`) {
+                    let result = selected.data.properties.defaultEvents?.onEnter?.();
+                    selected.data.properties.events?.onEnter?.();
+                }
+
+                if (key === `\u0008` && this.curlocs.textloc > 0) {
+                    selected.data.properties.text = `${selected.data.properties.text?.substring(0, this.curlocs.textloc - 1)}${selected.data.properties.text?.substring(this.curlocs.textloc, selected.data.properties.text.length)}`;
+                    this.curlocs.textloc -= 1;
+                }
+            } else {
+                if (key === `\u001b[C`) this.curlocs.tab += 1;
+                if (key === `\u001b[D`) this.curlocs.tab -= 1;
+
+                if (key === `\u001b[C` || key === `\u001b[D`) {
+                    this.curlocs.textloc = 0;
+                    selected.data.properties.events?.onLeave?.();
+                    selected.data.properties.defaultEvents?.onLeave?.();
+                }
+
+                if (key === `\r` || key === `\n`) {
+                    this.curlocs.textloc = selected.data.properties.text ? selected.data.properties.text.length : 0;
+                    
+                    let result = selected.data.properties.defaultEvents?.onEnter?.();
+                    selected.data.properties.events?.onEnter?.();
+    
+                    if (selected.data.type === `radio`) this.widgets = result;
                 }
             }
 
             if (this.curlocs.tab >= this.Vwidgets.length) this.curlocs.tab = this.Vwidgets.length - 1;
             if (this.curlocs.tab < 0) this.curlocs.tab = 0;
             
-            if (this.Vwidgets[this.curlocs.tab].data.properties.styles.height !== process.stdout.rows) {
-                this.Vwidgets[this.curlocs.tab].data.properties.events?.onPut?.();
-                this.Vwidgets[this.curlocs.tab].data.properties.defaultEvents?.onPut?.();
+            if (selected.data.properties.styles.height !== process.stdout.rows) {
+                selected.data.properties.events?.onPut?.();
+                selected.data.properties.defaultEvents?.onPut?.();
             }
         });
 
@@ -138,29 +167,13 @@ export class CLIApplication {
 
     public hexbn(hex: string, brightness: number) {
         hex = hex.replace(/^#/, ``);
-
         if (!/^(?:[0-9a-fA-F]{3}){1,2}$/.test(hex)) return ``;
-
         let bigint = parseInt(hex, 16);
-
-        let r = (bigint >> 16) & 255;
-        let g = (bigint >> 8) & 255;
-        let b = bigint & 255;
-
-        r -= brightness;
-        g -= brightness;
-        b -= brightness;
-
-        r = Math.max(0, Math.min(255, r));
-        g = Math.max(0, Math.min(255, g));
-        b = Math.max(0, Math.min(255, b));
-
-        const hexR = r.toString(16).padStart(2, `0`);
-        const hexG = g.toString(16).padStart(2, `0`);
-        const hexB = b.toString(16).padStart(2, `0`);
-
-        const hexColor = `#${hexR}${hexG}${hexB}`;
-
+        let rgb = [(bigint >> 16) & 255, (bigint >> 8) & 255, bigint & 255];
+        rgb = rgb.map(e => e -= brightness);
+        rgb = rgb.map(e => Math.max(0, Math.min(255, e)));
+        let res = rgb.map(e => e.toString(16).padStart(2, `0`));
+        const hexColor = `#${res.join(``)}`;
         return hexColor;
     }
 
@@ -188,6 +201,7 @@ export class CLIApplication {
                 if (styles.visible && type === `checkbox`) widget.prerun(this.widgets, widget, this.isOverLapping, focus);
                 if (styles.visible && type === `radio`) widget.prerun(this.widgets, widget, this.isOverLapping, focus);
                 if (styles.visible && type === `image`) widget.prerun(widget);
+                if (styles.visible && type === `textbox`) widget.prerun(widget, focus, this.curlocs.textloc);
             });
 
             if (this.debug) {
