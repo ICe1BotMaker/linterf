@@ -3,7 +3,7 @@ import * as app from "../CLIApplication";
 
 export class CLIImage {
     private text: string = ``;
-    private doing: boolean = false;
+    private isDoing: boolean = false;
 
     public data: app.Idata = {
         "type": "image",
@@ -37,8 +37,8 @@ export class CLIImage {
                 process.stdout.write(`\x1b[${styles.y + idx};${styles.x}H`);
                 console.log(line);
             })
-        } else if (!this.doing) {
-            this.doing = true;
+        } else if (!this.isDoing) {
+            this.isDoing = true;
             imageToAscii(styles.img, {
                 size: {
                     width: styles.width,

@@ -4,7 +4,7 @@ import * as app from "../CLIApplication";
 
 export class CLIWebview {
     private text: string = ``;
-    private doing: boolean = false;
+    private isDoing: boolean = false;
 
     public data: app.Idata = {
         "type": "image",
@@ -37,8 +37,8 @@ export class CLIWebview {
                 process.stdout.write(`\x1b[${styles.y + idx};${styles.x}H`);
                 console.log(line);
             })
-        } else if (!this.doing) {
-            this.doing = true;
+        } else if (!this.isDoing) {
+            this.isDoing = true;
 
             const browser = puppeteer.launch();
             const page = browser.then(value => value.newPage());

@@ -27,10 +27,10 @@ export class CLILabel {
     public prerun(widgets: Array<app.Iwidget>, widget: app.Iwidget, func: Function, focus: string) {
         const { styles, text } = widget.data.properties;
 
-        let bwidget: boolean = false;
+        let isOverLapping: boolean = false;
         widgets.forEach((_widget: app.Iwidget) => {
             if (func(_widget, styles)) {
-                bwidget = true;
+                isOverLapping = true;
                 
                 process.stdout.write(`\x1b[${styles.y};${styles.x}H`);
 
@@ -41,7 +41,7 @@ export class CLILabel {
             }
         });
 
-        if (!bwidget) {
+        if (!isOverLapping) {
             process.stdout.write(`\x1b[${styles.y};${styles.x}H`);
 
             const backgroundColor = `#000000`;
