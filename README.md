@@ -29,14 +29,14 @@ const { CLIApplication, CLILabel } = require(`linterf`);
 
 const app = new CLIApplication();
 
-/*
 const title = <CLILabel text="title" styles={{ "text-color": "#222831", y: 2 }} />;
-.. or ..
-const title = new CLILabel({ text: "title", styles: { "text-color": "#222831", y: 2 } });
-*/
-
-const title = new CLILabel({ text: "title", styles: { "text-color": "#222831", y: 2 } });
 
 app.append(title);
 app.show(30); // frame: 30
+```
+
+### 🎥 Run
+
+```bash
+$ npx linterf-scripts build
 ```
