@@ -53,6 +53,7 @@ export interface Ievents {
     onEnter?: Function;
     onPut?: Function;
     onLeave?: Function;
+    onChange?: Function;
 }
 
 export class CLIApplication {
@@ -113,8 +114,11 @@ export class CLIApplication {
                 }
 
                 if (key === `\r` || key === `\n`) {
-                    let result = selected.data.properties.defaultEvents?.onEnter?.();
+                    selected.data.properties.defaultEvents?.onEnter?.();
                     selected.data.properties.events?.onEnter?.();
+
+                    selected.data.properties.defaultEvents.onChange?.();
+                    selected.data.properties.events.onChange?.();
                 }
 
                 if (key === `\u0008` && this.curlocs.textloc > 0) {
