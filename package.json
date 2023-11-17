@@ -6,7 +6,9 @@
     "author": "ice1",
     "license": "Apache-2.0",
     "dependencies": {
+        "@typescript-eslint/parser": "^6.11.0",
         "chalk": "^4.1.2",
+        "eslint": "^8.53.0",
         "image-to-ascii": "^3.2.0",
         "puppeteer": "^21.5.1",
         "typescript": "^5.2.2"
