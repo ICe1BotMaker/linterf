@@ -40,7 +40,7 @@ class CLIApplication {
         process.stdin.setRawMode(true);
         process.stdin.setEncoding(`utf-8`);
         process.stdin.on(`data`, (key) => {
-            var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
+            var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z;
             if (key === `\u0003`) {
                 process.stdout.write(`\x1b[${process.stdout.rows - 1};${process.stdout.columns}H`);
                 process.exit();
@@ -56,11 +56,13 @@ class CLIApplication {
                     this.curlocs.textloc += 1;
                 }
                 if (key === `\r` || key === `\n`) {
-                    let result = (_d = (_c = selected.data.properties.defaultEvents) === null || _c === void 0 ? void 0 : _c.onEnter) === null || _d === void 0 ? void 0 : _d.call(_c);
+                    (_d = (_c = selected.data.properties.defaultEvents) === null || _c === void 0 ? void 0 : _c.onEnter) === null || _d === void 0 ? void 0 : _d.call(_c);
                     (_f = (_e = selected.data.properties.events) === null || _e === void 0 ? void 0 : _e.onEnter) === null || _f === void 0 ? void 0 : _f.call(_e);
+                    (_h = (_g = selected.data.properties.defaultEvents).onChange) === null || _h === void 0 ? void 0 : _h.call(_g);
+                    (_k = (_j = selected.data.properties.events).onChange) === null || _k === void 0 ? void 0 : _k.call(_j);
                 }
                 if (key === `\u0008` && this.curlocs.textloc > 0) {
-                    selected.data.properties.text = `${(_g = selected.data.properties.text) === null || _g === void 0 ? void 0 : _g.substring(0, this.curlocs.textloc - 1)}${(_h = selected.data.properties.text) === null || _h === void 0 ? void 0 : _h.substring(this.curlocs.textloc, selected.data.properties.text.length)}`;
+                    selected.data.properties.text = `${(_l = selected.data.properties.text) === null || _l === void 0 ? void 0 : _l.substring(0, this.curlocs.textloc - 1)}${(_m = selected.data.properties.text) === null || _m === void 0 ? void 0 : _m.substring(this.curlocs.textloc, selected.data.properties.text.length)}`;
                     this.curlocs.textloc -= 1;
                 }
             }
@@ -71,13 +73,13 @@ class CLIApplication {
                     this.curlocs.tab -= 1;
                 if (key === `\u001b[C` || key === `\u001b[D`) {
                     this.curlocs.textloc = 0;
-                    (_k = (_j = selected.data.properties.events) === null || _j === void 0 ? void 0 : _j.onLeave) === null || _k === void 0 ? void 0 : _k.call(_j);
-                    (_m = (_l = selected.data.properties.defaultEvents) === null || _l === void 0 ? void 0 : _l.onLeave) === null || _m === void 0 ? void 0 : _m.call(_l);
+                    (_p = (_o = selected.data.properties.events) === null || _o === void 0 ? void 0 : _o.onLeave) === null || _p === void 0 ? void 0 : _p.call(_o);
+                    (_r = (_q = selected.data.properties.defaultEvents) === null || _q === void 0 ? void 0 : _q.onLeave) === null || _r === void 0 ? void 0 : _r.call(_q);
                 }
                 if (key === `\r` || key === `\n`) {
                     this.curlocs.textloc = selected.data.properties.text ? selected.data.properties.text.length : 0;
-                    let result = (_p = (_o = selected.data.properties.defaultEvents) === null || _o === void 0 ? void 0 : _o.onEnter) === null || _p === void 0 ? void 0 : _p.call(_o);
-                    (_r = (_q = selected.data.properties.events) === null || _q === void 0 ? void 0 : _q.onEnter) === null || _r === void 0 ? void 0 : _r.call(_q);
+                    let result = (_t = (_s = selected.data.properties.defaultEvents) === null || _s === void 0 ? void 0 : _s.onEnter) === null || _t === void 0 ? void 0 : _t.call(_s);
+                    (_v = (_u = selected.data.properties.events) === null || _u === void 0 ? void 0 : _u.onEnter) === null || _v === void 0 ? void 0 : _v.call(_u);
                     if (selected.data.type === `radio`)
                         this.widgets = result;
                 }
@@ -87,8 +89,8 @@ class CLIApplication {
             if (this.curlocs.tab < 0)
                 this.curlocs.tab = 0;
             if (selected.data.properties.styles.height !== process.stdout.rows) {
-                (_t = (_s = selected.data.properties.events) === null || _s === void 0 ? void 0 : _s.onPut) === null || _t === void 0 ? void 0 : _t.call(_s);
-                (_v = (_u = selected.data.properties.defaultEvents) === null || _u === void 0 ? void 0 : _u.onPut) === null || _v === void 0 ? void 0 : _v.call(_u);
+                (_x = (_w = selected.data.properties.events) === null || _w === void 0 ? void 0 : _w.onPut) === null || _x === void 0 ? void 0 : _x.call(_w);
+                (_z = (_y = selected.data.properties.defaultEvents) === null || _y === void 0 ? void 0 : _y.onPut) === null || _z === void 0 ? void 0 : _z.call(_y);
             }
         });
         process.stdout.write(`\x1B[?25l`);
@@ -142,6 +144,8 @@ class CLIApplication {
                     widget.prerun(widget);
                 if (styles.visible && type === `textbox`)
                     widget.prerun(widget, focus, this.curlocs.textloc);
+                if (styles.visible && type === `custom`)
+                    widget.prerun(widget, focus, this.widgets, this.isOverLapping, this.curlocs);
             });
             if (this.debug) {
                 process.stdout.write(`\x1b[1;1H`);

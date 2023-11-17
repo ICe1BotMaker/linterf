@@ -38,6 +38,7 @@ export interface Ievents {
     onEnter?: Function;
     onPut?: Function;
     onLeave?: Function;
+    onChange?: Function;
 }
 export declare class CLIApplication {
     private debug;
