@@ -1,8 +1,9 @@
 # 💫 linterf
 
-(**under development**)
-
 <img src="imgs/video.gif" style="width: 100%">
+
+## Please watch it before using it
+Be sure to watch [DETAIL.md](https://github.com/ICe1BotMaker/linterf/blob/master/DETAIL.md) before using it!
 
 ### 💬 An advanced version of nodecli-gui
 
