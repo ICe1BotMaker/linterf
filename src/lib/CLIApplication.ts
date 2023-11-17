@@ -206,6 +206,8 @@ export class CLIApplication {
                 if (styles.visible && type === `radio`) widget.prerun(this.widgets, widget, this.isOverLapping, focus);
                 if (styles.visible && type === `image`) widget.prerun(widget);
                 if (styles.visible && type === `textbox`) widget.prerun(widget, focus, this.curlocs.textloc);
+                
+                if (styles.visible && type === `custom`) widget.prerun(widget, focus, this.widgets, this.isOverLapping, this.curlocs);
             });
 
             if (this.debug) {
