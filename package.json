@@ -1,6 +1,6 @@
 {
     "name": "linterf",
-    "version": "1.8.2",
+    "version": "1.8.3",
     "description": "Line interface for easier use of cli",
     "main": "dist/index.js",
     "author": "ice1",
