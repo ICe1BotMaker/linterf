@@ -19,12 +19,32 @@ export interface Iproperties {
     events: Ievents;
     defaultEvents: Ievents;
 
+    canvasChilds?: Array<IcanvasChild>;
+
     text?: string;
     placeholder?: string;
 
     checked?: boolean;
 
     [key: string]: any;
+}
+
+export interface IcanvasChild {
+    type: string;
+    
+    x: number;
+    y: number;
+    toX?: number;
+    toY?: number;
+    centerX?: number;
+    centerY?: number,
+
+    fill: string;
+    
+    radius?: number;
+
+    width?: number;
+    height?: number;
 }
 
 export interface Istyles {
@@ -206,6 +226,7 @@ export class CLIApplication {
                 if (styles.visible && type === `radio`) widget.prerun(this.widgets, widget, this.isOverLapping, focus);
                 if (styles.visible && type === `image`) widget.prerun(widget);
                 if (styles.visible && type === `textbox`) widget.prerun(widget, focus, this.curlocs.textloc);
+                if (styles.visible && type === `canvas`) widget.prerun(widget);
                 
                 if (styles.visible && type === `custom`) widget.prerun(widget, focus, this.widgets, this.isOverLapping, this.curlocs);
             });
