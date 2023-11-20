@@ -14,10 +14,24 @@ export interface Iproperties {
     styles: Istyles;
     events: Ievents;
     defaultEvents: Ievents;
+    canvasChilds?: Array<IcanvasChild>;
     text?: string;
     placeholder?: string;
     checked?: boolean;
     [key: string]: any;
+}
+export interface IcanvasChild {
+    type: string;
+    x: number;
+    y: number;
+    toX?: number;
+    toY?: number;
+    centerX?: number;
+    centerY?: number;
+    fill: string;
+    radius?: number;
+    width?: number;
+    height?: number;
 }
 export interface Istyles {
     x: number;

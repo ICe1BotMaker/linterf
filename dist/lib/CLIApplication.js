@@ -144,6 +144,8 @@ class CLIApplication {
                     widget.prerun(widget);
                 if (styles.visible && type === `textbox`)
                     widget.prerun(widget, focus, this.curlocs.textloc);
+                if (styles.visible && type === `canvas`)
+                    widget.prerun(widget);
                 if (styles.visible && type === `custom`)
                     widget.prerun(widget, focus, this.widgets, this.isOverLapping, this.curlocs);
             });
