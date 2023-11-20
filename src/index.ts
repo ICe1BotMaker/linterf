@@ -8,4 +8,6 @@ export { CLIRadio } from "./lib/CLIWidgets/CLIRadio";
 export { CLIImage } from "./lib/CLIWidgets/CLIImage";
 export { CLITextbox } from './lib/CLIWidgets/CLITextbox'
 export { CLIWebview } from "./lib/CLIWidgets/CLIWebview";
+export { CLICanvas } from "./lib/CLIWidgets/CLICanvas";
+
 export { CLICustom } from "./lib/CLIWidgets/CLICustom";
