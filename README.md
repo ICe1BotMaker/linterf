@@ -7,9 +7,9 @@ Be sure to watch [DETAIL.md](https://github.com/ICe1BotMaker/linterf/blob/master
 
 ### 💬 An advanced version of nodecli-gui
 
-- **Widgets**: Panel, Button, Label, Checkbox, Radio, Image, Textbox, Webview
-- **Presets**: Modal, (create-later)
-- **Functions**: TCG (3D CLI Graphic), (create-later)
+- **Widgets**: Panel, Button, Label, Checkbox, Radio, Image, Textbox, Webview, Custom
+- **Presets**: Modal (create-later)
+- **Functions**: TCG (3D CLI Graphic)
 
 #### 🎬 **Webview ?**
 - Use the Web-related node.js library to take screenshots over the Internet and convert them into text to display
