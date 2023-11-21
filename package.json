@@ -1,8 +1,8 @@
 {
     "name": "linterf",
-    "version": "1.8.5",
+    "version": "2.9.14",
     "description": "Line interface for easier use of cli",
-    "main": "dist/index.js",
+    "main": "dist/src/index.js",
     "author": "ice1",
     "license": "Apache-2.0",
     "dependencies": {
