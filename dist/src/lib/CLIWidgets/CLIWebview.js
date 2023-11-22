@@ -56,7 +56,7 @@ class CLIWebview {
             this.data.properties = app.setProps(props, this.data.properties);
     }
     prerun(widget) {
-        const { styles } = widget.data.properties;
+        const { styles, events } = widget.data.properties;
         if (this.text !== ``) {
             this.text.split(`\n`).forEach((line, idx) => {
                 process.stdout.write(`\x1b[${styles.y + idx};${styles.x}H`);
@@ -68,31 +68,53 @@ class CLIWebview {
             const browser = puppeteer_1.default.launch();
             const page = browser.then(value => value.newPage());
             page.then(value => {
-                if (styles.page)
-                    value.goto(styles.page).then(() => {
-                        value.type(`textarea[type="search"]`, `sans`).then(() => {
-                            value.click(`body > div > div > form > div:nth-child(1) > div > div > center > input`).then(() => {
-                                value.waitForTimeout(2000).then(() => {
-                                    value.screenshot({ path: `browse.png` }).then(() => {
-                                        styles.img = `browse.png`;
-                                        (0, image_to_ascii_1.default)(styles.img, {
-                                            size: {
-                                                width: styles.width,
-                                                height: styles.height
-                                            },
-                                            bg: true,
-                                            fg: false,
-                                            pixels: styles["img-pixels"]
-                                        }, (err, converted) => {
-                                            if (err)
-                                                throw new Error(err);
-                                            this.text = converted;
-                                        });
+                var _a;
+                if (typeof events.onConnect === `function`)
+                    (_a = events.onConnect) === null || _a === void 0 ? void 0 : _a.call(events, value, () => {
+                        if (this.text === ``) {
+                            value.waitForTimeout(2000).then(() => {
+                                value.screenshot({ path: `browse.png` }).then(() => {
+                                    styles.img = `browse.png`;
+                                    (0, image_to_ascii_1.default)(styles.img, {
+                                        size: {
+                                            width: styles.width,
+                                            height: styles.height
+                                        },
+                                        bg: true,
+                                        fg: false,
+                                        pixels: styles["img-pixels"]
+                                    }, (err, converted) => {
+                                        if (err)
+                                            throw new Error(err);
+                                        this.text = converted;
                                     });
                                 });
                             });
-                        });
+                        }
                     });
+                // if (styles.page) value.goto(styles.page).then(() => {
+                //     value.type(`textarea[type="search"]`, `sans`).then(() => {
+                //         value.click(`body > div > div > form > div:nth-child(1) > div > div > center > input`).then(() => {
+                //             value.waitForTimeout(2000).then(() => {
+                //                 value.screenshot({ path: `browse.png` }).then(() => {
+                //                     styles.img = `browse.png`;
+                //                     imageToAscii(styles.img, {
+                //                         size: {
+                //                             width: styles.width,
+                //                             height: styles.height
+                //                         },
+                //                         bg: true,
+                //                         fg: false,
+                //                         pixels: styles["img-pixels"]
+                //                     }, (err: string, converted: string) => {
+                //                         if (err) throw new Error(err);
+                //                         this.text = converted;
+                //                     });
+                //                 });
+                //             });
+                //         });
+                //     });
+                // });
             });
         }
     }

@@ -29,6 +29,7 @@ class CLICanvas {
     line(object) {
         if (!object.toX || !object.toY)
             return;
+        let result = [];
         const deltaX = object.toX - object.x;
         const deltaY = object.toY - object.y;
         const steps = Math.max(Math.abs(deltaX), Math.abs(deltaY));
@@ -52,32 +53,43 @@ class CLICanvas {
             }
             process.stdout.write(`\x1b[${y};${x}H`);
             console.log(object.fill);
+            result.push({ fill: object.fill, x: x, y: y });
         }
+        return result;
     }
     circle(object) {
         if (!object.centerX || !object.centerY || !object.radius)
             return;
+        let result = [];
         for (let y = object.centerY - object.radius; y <= object.centerY + object.radius; y++) {
             for (let x = object.centerX - object.radius; x <= object.centerX + object.radius; x++) {
                 const distance = Math.sqrt((x - object.centerX) ** 2 + (y - object.centerY) ** 2);
                 if (distance <= object.radius) {
                     process.stdout.write(`\x1b[${y};${x}H`);
                     console.log(object.fill);
+                    result.push({ fill: object.fill, x: x, y: y });
                 }
             }
         }
+        return result;
     }
     rectangle(object) {
         if (!object.height || !object.width)
             return;
+        let result = [];
         for (let i = object.y; i < object.y + object.height; i++) {
             for (let j = object.x; j < object.x + object.width; j++) {
                 process.stdout.write(`\x1b[${i};${j}H`);
                 console.log(object.fill);
+                result.push({ fill: object.fill, x: j, y: i });
             }
         }
+        return result;
     }
     constructor(props) {
+        this.lines = [];
+        this.circles = [];
+        this.rectangles = [];
         this.data = {
             "type": "canvas",
             "properties": {
@@ -102,12 +114,52 @@ class CLICanvas {
     prerun(widget) {
         var _a;
         (_a = widget.data.properties.canvasChilds) === null || _a === void 0 ? void 0 : _a.forEach((child) => {
-            if (child.type === `line`)
-                this.line(child);
-            if (child.type === `rectangle`)
-                this.rectangle(child);
-            if (child.type === `circle`)
-                this.circle(child);
+            var _a, _b, _c;
+            if (child.type === `line`) {
+                if (this.lines.includes(child)) {
+                    const idx = this.lines.findIndex(e => e === child);
+                    (_a = this.lines[idx].private) === null || _a === void 0 ? void 0 : _a.forEach(_private => {
+                        if (!_private.x || !_private.y)
+                            return;
+                        process.stdout.write(`\x1b[${_private.y};${_private.x}H`);
+                        console.log(_private.fill);
+                    });
+                }
+                else {
+                    child.private = this.line(child);
+                    this.lines.push(child);
+                }
+            }
+            else if (child.type === `rectangle`) {
+                if (this.rectangles.includes(child)) {
+                    const idx = this.rectangles.findIndex(e => e === child);
+                    (_b = this.rectangles[idx].private) === null || _b === void 0 ? void 0 : _b.forEach(_private => {
+                        if (!_private.x || !_private.y)
+                            return;
+                        process.stdout.write(`\x1b[${_private.y};${_private.x}H`);
+                        console.log(_private.fill);
+                    });
+                }
+                else {
+                    child.private = this.rectangle(child);
+                    this.rectangles.push(child);
+                }
+            }
+            else if (child.type === `circle`) {
+                if (this.circles.includes(child)) {
+                    const idx = this.circles.findIndex(e => e === child);
+                    (_c = this.circles[idx].private) === null || _c === void 0 ? void 0 : _c.forEach(_private => {
+                        if (!_private.x || !_private.y)
+                            return;
+                        process.stdout.write(`\x1b[${_private.y};${_private.x}H`);
+                        console.log(_private.fill);
+                    });
+                }
+                else {
+                    child.private = this.circle(child);
+                    this.circles.push(child);
+                }
+            }
         });
     }
 }

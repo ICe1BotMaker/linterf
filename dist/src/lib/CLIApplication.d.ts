@@ -32,6 +32,12 @@ export interface IcanvasChild {
     radius?: number;
     width?: number;
     height?: number;
+    private?: Iresult[];
+}
+export interface Iresult {
+    x: number;
+    y: number;
+    fill: string;
 }
 export interface Istyles {
     x: number;
@@ -53,6 +59,7 @@ export interface Ievents {
     onPut?: Function;
     onLeave?: Function;
     onChange?: Function;
+    onConnect?: (object);
 }
 export declare class CLIApplication {
     private debug;

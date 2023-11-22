@@ -61,18 +61,16 @@ class CLITextbox {
     }
     prerun(widget, focus, textloc) {
         const { styles, text, placeholder } = widget.data.properties;
+        const backgroundColor = styles["background-color"] || `#ffffff`;
+        const placeholderColor = styles["placeholder-color"] || `#777777`;
+        const textColor = styles["text-color"] || `#000000`;
         if (this.isTyping) {
             process.stdout.write(`\x1b[${styles.y};${styles.x}H`);
-            const backgroundColor = styles["background-color"] || `#ffffff`;
-            const placeholderColor = styles["placeholder-color"] || `#777777`;
-            const textColor = styles["text-color"] || `#000000`;
             console.log(focus + (text === `` ? chalk_1.default.bgHex(backgroundColor)(chalk_1.default.hex(placeholderColor)(placeholder)) : chalk_1.default.bgHex(backgroundColor)(chalk_1.default.hex(textColor)(`${text === null || text === void 0 ? void 0 : text.substring(0, textloc)}|${text === null || text === void 0 ? void 0 : text.substring(textloc, text.length)}`))));
         }
         else {
             process.stdout.write(`\x1b[${styles.y};${styles.x}H`);
-            const backgroundColor = styles["background-color"] || `#ffffff`;
-            const textColor = styles["text-color"] || `#000000`;
-            console.log(focus + chalk_1.default.bgHex(backgroundColor)(chalk_1.default.hex(textColor)(text)));
+            console.log(focus + (text === `` ? chalk_1.default.bgHex(backgroundColor)(chalk_1.default.hex(placeholderColor)(placeholder)) : chalk_1.default.bgHex(backgroundColor)(chalk_1.default.hex(textColor)(text))));
         }
     }
 }
