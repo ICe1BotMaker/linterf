@@ -24,5 +24,8 @@
     },
     "scripts": {
         "test": "npx babel tests --out-dir tests"
+    },
+    "publishConfig": {
+        "@ice1:registry": "https://npm.pkg.github.com"
     }
 }
