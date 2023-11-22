@@ -1,4 +1,4 @@
-const { CLIApplication, CLICanvas } = require(`../`);
+const { CLIApplication, CLICanvas, CLITextbox } = require(`../`);
 
 const app = new CLIApplication();
 
@@ -30,5 +30,12 @@ const canvas = new CLICanvas({
     ]
 });
 
-app.append(canvas);
+const textbox = new CLITextbox({
+    placeholder: `sans`,
+    styles: {
+        y: 9
+    }
+})
+
+app.append(canvas, textbox);
 app.show(30);
