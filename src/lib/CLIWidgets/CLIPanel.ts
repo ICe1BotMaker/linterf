@@ -13,7 +13,7 @@ export class CLIPanel {
                 "y": 0,
                 "width": process.stdout.columns,
                 "height": process.stdout.rows,
-                "fill": "█",
+                "fill": " ",
                 "background-color": "#000000",
                 "text-color": "#ffffff",
                 "visible": true
@@ -30,7 +30,7 @@ export class CLIPanel {
     public prerun(widget: app.Iwidget, focus: string) {
         const { styles } = widget.data.properties;
 
-        if (!styles.fill) styles.fill = `█`;
+        if (!styles.fill) styles.fill = ` `;
 
         process.stdout.write(`\x1b[${styles.y};${styles.x}H`);
         if (styles.width) console.log(focus + chalk.hex(styles[`background-color`] ? styles[`background-color`] : `#ffffff`)(styles.fill.repeat(styles.width)));
