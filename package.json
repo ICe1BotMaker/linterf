@@ -1,6 +1,6 @@
 {
     "name": "linterf",
-    "version": "2.9.31",
+    "version": "2.9.32",
     "description": "Line interface for easier use of cli",
     "main": "dist/src/index.js",
     "author": "ice1",
@@ -26,7 +26,7 @@
         "test": "npx babel tests --out-dir tests"
     },
     "publishConfig": {
-        "@username:registry": "https://npm.pkg.github.com"
+        "@ice1:registry": "https://npm.pkg.github.com"
     },
     "repository": {
         "type": "git",
