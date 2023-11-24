@@ -1,6 +1,6 @@
 {
     "name": "@ice1/linterf",
-    "version": "2.9.27",
+    "version": "2.9.28",
     "description": "Line interface for easier use of cli",
     "main": "dist/src/index.js",
     "author": "ice1",
@@ -26,7 +26,7 @@
         "test": "npx babel tests --out-dir tests"
     },
     "publishConfig": {
-        "registry": "https://npm.pkg.github.com"
+        "@username:registry": "https://npm.pkg.github.com"
     },
     "repository": {
         "type": "git",
