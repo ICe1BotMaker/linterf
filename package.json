@@ -1,6 +1,6 @@
 {
-    "name": "@ice1/linterf",
-    "version": "2.9.33",
+    "name": "linterf",
+    "version": "2.9.35",
     "description": "Line interface for easier use of cli",
     "main": "dist/src/index.js",
     "author": "ice1",
