@@ -1,5 +1,5 @@
 {
-    "name": "linterf",
+    "name": "@ice1/linterf",
     "version": "2.9.32",
     "description": "Line interface for easier use of cli",
     "main": "dist/src/index.js",
