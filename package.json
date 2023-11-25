@@ -1,6 +1,6 @@
 {
     "name": "linterf",
-    "version": "2.9.35",
+    "version": "2.9.36",
     "description": "Line interface for easier use of cli",
     "main": "dist/src/index.js",
     "author": "ice1",
@@ -28,8 +28,5 @@
     "publishConfig": {
         "@ice1:registry": "https://npm.pkg.github.com"
     },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/ICe1BotMaker/linterf"
-    }
+    "repository": "https://github.com/ICe1BotMaker/linterf"
 }
