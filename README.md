@@ -1,9 +1,11 @@
-# 💫 linterf
-
 <img src="imgs/video.gif" style="width: 100%">
 
-## Please watch it before using it
-Be sure to watch [DETAIL.md](https://github.com/ICe1BotMaker/linterf/blob/master/DETAIL.md) before using it!
+# 💫 linterf
+
+***use `GraphicsMagick`***
+
+> [!IMPORTANT]
+> Be sure to watch [DETAIL.md](https://github.com/ICe1BotMaker/linterf/blob/master/DETAIL.md) before using it!
 
 ### 💬 An advanced version of nodecli-gui
 
@@ -39,5 +41,5 @@ app.show(30); // frame: 30
 ### 🎥 Run
 
 ```bash
-$ npx linterf-scripts build
+$ npx linterf-scripts
 ```
