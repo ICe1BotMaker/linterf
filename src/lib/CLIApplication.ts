@@ -84,6 +84,8 @@ export interface Ievents {
     onLeave?: Function;
     onChange?: Function;
     onConnect?: (object);
+    
+    onFrame?: Function;
 }
 
 export class CLIApplication {
@@ -239,6 +241,8 @@ export class CLIApplication {
                 if (styles.visible && type === `canvas`) widget.prerun(widget);
                 
                 if (styles.visible && type === `custom`) widget.prerun(widget, focus, this.widgets, this.isOverLapping, this.curlocs);
+                
+                if (styles.visible && type === `tcg`) widget.prerun(widget);
             });
 
             if (this.debug) {
