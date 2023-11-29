@@ -148,6 +148,8 @@ class CLIApplication {
                     widget.prerun(widget);
                 if (styles.visible && type === `custom`)
                     widget.prerun(widget, focus, this.widgets, this.isOverLapping, this.curlocs);
+                if (styles.visible && type === `tcg`)
+                    widget.prerun(widget);
             });
             if (this.debug) {
                 process.stdout.write(`\x1b[1;1H`);

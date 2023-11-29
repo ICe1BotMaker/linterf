@@ -1,14 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.global = void 0;
-class global {
-    constructor() {
-        this.libraries = [
-            { "type": "library", "name": "TCG", "version": "0.0.1" }
-        ];
-    }
-    getLibraries() {
-        return this.libraries;
-    }
-}
-exports.global = global;
+exports.TCG = void 0;
+var TCG_1 = require("./TCG");
+Object.defineProperty(exports, "TCG", { enumerable: true, get: function () { return TCG_1.TCG; } });

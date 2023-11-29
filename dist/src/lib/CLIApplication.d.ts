@@ -60,6 +60,7 @@ export interface Ievents {
     onLeave?: Function;
     onChange?: Function;
     onConnect?: (object);
+    onFrame?: Function;
 }
 export declare class CLIApplication {
     private debug;
