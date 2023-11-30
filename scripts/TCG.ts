@@ -33,6 +33,7 @@ export class TCG {
 
     private buffer1 = [];
     private buffer2 = [];
+    private buffer3 = [];
     private currentBuffer = this.buffer1;
 
     public camera: Iposition = { x: 1, y: -1, z: 0 };
@@ -62,7 +63,13 @@ export class TCG {
     }
     
     private swapBuffers() {
-        this.currentBuffer = this.currentBuffer === this.buffer1 ? this.buffer2 : this.buffer1;
+        if (this.currentBuffer === this.buffer1) {
+            this.currentBuffer = this.buffer2;
+        } else if (this.currentBuffer === this.buffer2) {
+            this.currentBuffer = this.buffer3;
+        } else {
+            this.currentBuffer = this.buffer1;
+        }
     }
     
     private drawBufferToConsole(buffer: any[]) {
@@ -119,7 +126,7 @@ export class TCG {
             const endScreenX = Math.round(endPoint.x * 10) + 40;
             const endScreenY = Math.round(endPoint.y * 10) + 5;
     
-            this. drawLine(startScreenX, startScreenY, endScreenX, endScreenY);
+            this.drawLine(startScreenX, startScreenY, endScreenX, endScreenY);
         }
     }
     
