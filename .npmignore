@@ -1,4 +1,11 @@
+.github/
+imgs/
+node_modules/
+scripts/
 src/
 tests/
+.gitignore
+.npmrc
+CHANGELOG.md
+DETAIL.md
 package-lock.json
-imgs/
