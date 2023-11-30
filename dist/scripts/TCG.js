@@ -51,7 +51,15 @@ class TCG {
         buffer[y][x] = char;
     }
     swapBuffers() {
-        this.currentBuffer = this.currentBuffer === this.buffer1 ? this.buffer2 : this.buffer1;
+        if (this.currentBuffer === this.buffer1) {
+            this.currentBuffer = this.buffer2;
+        }
+        else if (this.currentBuffer === this.buffer2) {
+            this.currentBuffer = this.buffer3;
+        }
+        else {
+            this.currentBuffer = this.buffer1;
+        }
     }
     drawBufferToConsole(buffer) {
         for (let row of buffer)
@@ -80,6 +88,7 @@ class TCG {
         };
         this.buffer1 = [];
         this.buffer2 = [];
+        this.buffer3 = [];
         this.currentBuffer = this.buffer1;
         this.camera = { x: 1, y: -1, z: 0 };
         this.objects = [];

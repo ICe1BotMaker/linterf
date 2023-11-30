@@ -14,6 +14,7 @@ export declare class TCG {
     data: app.Idata;
     private buffer1;
     private buffer2;
+    private buffer3;
     private currentBuffer;
     camera: Iposition;
     objects: Iobject[];
