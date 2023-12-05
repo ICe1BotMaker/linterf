@@ -6,6 +6,13 @@ export interface Iobject {
     center: Iposition;
     rotation: Iposition;
     vertices: Iposition[];
+
+    buffer: {
+        buffer1: any[];
+        buffer2: any[];
+        buffer3: any[];
+        currentBuffer: any[];
+    };
 }
 
 export interface Iposition {
@@ -35,6 +42,11 @@ export class TCG {
     public objects: Iobject[] = [];
 
     public constructor(objects: Iobject[], props?: app.Iproperties) {
+        objects = objects.map(e => {
+            e.buffer = { buffer1: [], buffer2: [], buffer3: [], currentBuffer: [] };
+            return e;
+        });
+
         this.objects = this.objects.concat(objects);
 
         if (props) this.data.properties = app.setProps(props, this.data.properties);
@@ -58,10 +70,37 @@ export class TCG {
         return { ...point, x, y };
     }
 
+    private drawToBuffer(buffer: any[], x: number, y: number, char: any) {
+        if (!buffer[y]) buffer[y] = [];
+        buffer[y][x] = char;
+    }
+    
+    private swapBuffers(object: Iobject) {
+        if (object.buffer.currentBuffer === object.buffer.buffer1) {
+            object.buffer.currentBuffer = object.buffer.buffer2;
+        } else if (object.buffer.currentBuffer === object.buffer.buffer2) {
+            object.buffer.currentBuffer = object.buffer.buffer3;
+        } else {
+            object.buffer.currentBuffer = object.buffer.buffer1;
+        }
+    }
+    
+    private drawBufferToConsole(buffer: any[]) {
+        for (let row of buffer) if (row) process.stdout.write(row.join('') + '\n');
+    }
+    
+    private clearBuffer(buffer: any[]) {
+        for (let i = 0; i < buffer.length; i++) buffer[i] = [];
+    }
+
     private draw() {
         process.stdout.write('\x1Bc');
     
         this.objects.forEach(object => {
+            if (!object.buffer) object.buffer = { buffer1: [], buffer2: [], buffer3: [], currentBuffer: [] };
+            
+            this.clearBuffer(object.buffer.currentBuffer);
+
             let rotatedVertices = object.vertices.map(point =>
                 this.rotateX(this.rotateY(this.rotateZ(point, object.rotation.z, object.center), object.rotation.y, object.center), object.rotation.x, object.center)
             );
@@ -78,6 +117,9 @@ export class TCG {
             this.connectAndDraw([2, 3, 7, 6], translatedVertices);
             this.connectAndDraw([0, 2, 6, 4], translatedVertices);
             this.connectAndDraw([1, 3, 7, 5], translatedVertices);
+    
+            this.swapBuffers(object);
+            this.drawBufferToConsole(object.buffer.currentBuffer);
         });
     }
 
@@ -123,6 +165,8 @@ export class TCG {
     }
 
     public prerun(widget: app.Iwidget) {
+        // console.log("Objects:", this.objects);
+
         const { events } = widget.data.properties;
         events.onFrame?.(this.objects, this.camera);
         this.draw();
