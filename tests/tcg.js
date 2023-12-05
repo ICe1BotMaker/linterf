@@ -21,7 +21,34 @@ const tcg = new global.TCG([
     }
 ], { events: {
     onFrame: (objects, camera) => {
-        if (objects[0].vertices[1].x * 10 >= process.stdout.columns) {
+        const playerFirstX = objects[0].vertices[0].x;
+        const playerFirstY = objects[0].vertices[0].y;
+        const playerFirstZ = objects[0].vertices[0].z;
+        const playerSecondX = objects[0].vertices[2].x;
+        const playerSecondY = objects[0].vertices[2].y;
+        const playerSecondZ = objects[0].vertices[3].z;
+        const playerWidth = objects[0].vertices[1].x - objects[0].vertices[0].x;
+        const playerHeight = objects[0].vertices[1].y - objects[0].vertices[0].y;
+        
+        const objectFirstX = objects[1].vertices[0].x;
+        const objectFirstY = objects[1].vertices[0].y;
+        const objectFirstZ = objects[1].vertices[0].z;
+        const objectSecondX = objects[1].vertices[2].x;
+        const objectSecondY = objects[1].vertices[2].y;
+        const objectSecondZ = objects[1].vertices[3].z;
+        const objectWidth = objects[1].vertices[1].x - objects[1].vertices[0].x;
+        const objectHeight = objects[1].vertices[1].y - objects[1].vertices[0].y;
+        
+        if (
+            (playerFirstX >= 5.5 && playerFirstX <= 9) && (
+                (Math.floor(playerFirstY + playerSecondZ) === Math.floor(objectFirstY + objectSecondZ)) ||
+                (Math.floor(playerFirstY + playerSecondZ) === Math.floor(objectFirstY + objectSecondZ))
+            )
+        ) {
+            process.exit();
+        }
+
+        if (playerFirstX * 10 >= process.stdout.columns) {
             const idx = tcg.objects.findIndex(e => e.id.includes(`pyramid`));
             if (idx !== -1) tcg.objects.splice(idx, 1);
             createObstacles();
@@ -40,7 +67,7 @@ const tcg = new global.TCG([
 } });
 
 const createObstacles = () => {
-    const location = { x: Math.floor(Math.random() * 5) + 4, y: Math.floor(Math.random() * 2) };
+    const location = { x: 7, y: Math.floor(Math.random() * 2) };
 
     tcg.objects.push({
         id: `pyramid-${Math.random().toString(36).substring(2)}`,
@@ -57,7 +84,9 @@ const createObstacles = () => {
             { x: .5 + location.x, y: .5 + location.y, z: 1 },
         ]
     });
-}
+};
+
+createObstacles();
 
 process.stdin.on(`data`, key => {
     if (key === `w`) {
@@ -70,11 +99,11 @@ process.stdin.on(`data`, key => {
         tcg.objects[0].center.y += .1;
     }
 
-    if (key === ` `) {
-        tcg.objects[0].center.z += .5;
-        tcg.objects[0].vertices.map(e => e.z += .1);
+    if (key === `d`) {
+        tcg.objects[0].vertices.map(e => e.x += .2);
+        tcg.objects[0].center.x += .2;
     }
 });
 
 app.append(tcg);
-app.show(24);
+app.show(30);
