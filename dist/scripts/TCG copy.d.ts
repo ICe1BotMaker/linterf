@@ -4,6 +4,12 @@ export interface Iobject {
     center: Iposition;
     rotation: Iposition;
     vertices: Iposition[];
+    buffer: {
+        buffer1: any[];
+        buffer2: any[];
+        buffer3: any[];
+        currentBuffer: any[];
+    };
 }
 export interface Iposition {
     x: number;
@@ -18,6 +24,10 @@ export declare class TCG {
     private rotateX;
     private rotateY;
     private rotateZ;
+    private drawToBuffer;
+    private swapBuffers;
+    private drawBufferToConsole;
+    private clearBuffer;
     private draw;
     private connectAndDraw;
     private drawLine;

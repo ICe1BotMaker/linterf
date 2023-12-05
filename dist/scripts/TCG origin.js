@@ -48,6 +48,10 @@ class TCG {
         };
         this.camera = { x: 1, y: -1, z: 0 };
         this.objects = [];
+        objects = objects.map(e => {
+            e.buffer = { buffer1: [], buffer2: [], buffer3: [], currentBuffer: [] };
+            return e;
+        });
         this.objects = this.objects.concat(objects);
         if (props)
             this.data.properties = app.setProps(props, this.data.properties);
@@ -67,9 +71,37 @@ class TCG {
         const y = (point.x - center.x) * Math.sin(angle) + (point.y - center.y) * Math.cos(angle) + center.y;
         return Object.assign(Object.assign({}, point), { x, y });
     }
+    drawToBuffer(buffer, x, y, char) {
+        if (!buffer[y])
+            buffer[y] = [];
+        buffer[y][x] = char;
+    }
+    swapBuffers(object) {
+        if (object.buffer.currentBuffer === object.buffer.buffer1) {
+            object.buffer.currentBuffer = object.buffer.buffer2;
+        }
+        else if (object.buffer.currentBuffer === object.buffer.buffer2) {
+            object.buffer.currentBuffer = object.buffer.buffer3;
+        }
+        else {
+            object.buffer.currentBuffer = object.buffer.buffer1;
+        }
+    }
+    drawBufferToConsole(buffer) {
+        for (let row of buffer)
+            if (row)
+                process.stdout.write(row.join('') + '\n');
+    }
+    clearBuffer(buffer) {
+        for (let i = 0; i < buffer.length; i++)
+            buffer[i] = [];
+    }
     draw() {
         process.stdout.write('\x1Bc');
         this.objects.forEach(object => {
+            if (!object.buffer)
+                object.buffer = { buffer1: [], buffer2: [], buffer3: [], currentBuffer: [] };
+            this.clearBuffer(object.buffer.currentBuffer);
             let rotatedVertices = object.vertices.map(point => this.rotateX(this.rotateY(this.rotateZ(point, object.rotation.z, object.center), object.rotation.y, object.center), object.rotation.x, object.center));
             let translatedVertices = rotatedVertices.map(point => ({
                 x: point.x - this.camera.x,
@@ -82,6 +114,8 @@ class TCG {
             this.connectAndDraw([2, 3, 7, 6], translatedVertices);
             this.connectAndDraw([0, 2, 6, 4], translatedVertices);
             this.connectAndDraw([1, 3, 7, 5], translatedVertices);
+            this.swapBuffers(object);
+            this.drawBufferToConsole(object.buffer.currentBuffer);
         });
     }
     connectAndDraw(faceVertices, vertices) {
@@ -120,6 +154,7 @@ class TCG {
         }
     }
     prerun(widget) {
+        // console.log("Objects:", this.objects);
         var _a;
         const { events } = widget.data.properties;
         (_a = events.onFrame) === null || _a === void 0 ? void 0 : _a.call(events, this.objects, this.camera);
