@@ -2,7 +2,7 @@
 
 # 💫 linterf
 
-> ***use `GraphicsMagick`***
+> ***install `GraphicsMagick`***
 > 
 > Be sure to watch [DETAIL.md](https://github.com/ICe1BotMaker/linterf/blob/master/DETAIL.md) before using it!
 
@@ -18,11 +18,14 @@
 #### 🆕 **TCG ?**
 - A 3D engine using cli, and text is drawn on the screen using location and size data.
 
+##### When running tcg, use the program below to run it.
+- [**Windows Terminal**](https://apps.microsoft.com/detail/9N0DX20HK701?hl=ko-kr&gl=US)
+
 <img src="imgs/tcg.gif" style="width: 100%">
 
 ```jsx
-const { CLIApplication } = require(`../`);
-const global = require(`../dist/scripts/global`);
+const { CLIApplication } = require(`linterf`);
+const global = require(`linterf/dist/scripts/global`);
 
 const app = new CLIApplication();
 
